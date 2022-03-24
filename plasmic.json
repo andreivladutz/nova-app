@@ -1,0 +1,90 @@
+{
+  "platform": "react",
+  "code": {
+    "lang": "ts",
+    "scheme": "blackbox",
+    "reactRuntime": "classic"
+  },
+  "style": {
+    "scheme": "css-modules",
+    "defaultStyleCssFilePath": "plasmic/plasmic__default_style.css"
+  },
+  "images": {
+    "scheme": "files",
+    "publicDir": "../../public",
+    "publicUrlPrefix": "/static/"
+  },
+  "tokens": {
+    "scheme": "theo",
+    "tokensFilePath": "plasmic-tokens.theo.json"
+  },
+  "srcDir": "src/components",
+  "defaultPlasmicDir": "./plasmic",
+  "projects": [
+    {
+      "projectId": "greMf1VEQkt4MFPhQZJ1ua",
+      "projectApiToken": "nLwr1pUK9Gcvj7OCiGwDX8UD6g64FuPqTwMJxGxqg5OrdjfWqdpQiYQCPyrsgPXu3KiDStCjl7Jk7aaDuQ",
+      "projectName": "ApaNova App",
+      "version": "latest",
+      "cssFilePath": "plasmic/apa_nova_app/plasmic_apa_nova_app.module.css",
+      "components": [
+        {
+          "id": "VXVX0M5zp1Df",
+          "name": "Homepage",
+          "type": "managed",
+          "projectId": "greMf1VEQkt4MFPhQZJ1ua",
+          "renderModuleFilePath": "plasmic/apa_nova_app/PlasmicHomepage.tsx",
+          "importSpec": {
+            "modulePath": "Homepage.tsx"
+          },
+          "cssFilePath": "plasmic/apa_nova_app/PlasmicHomepage.module.css",
+          "scheme": "blackbox",
+          "componentType": "page"
+        },
+        {
+          "id": "57KMtY_B5Yg",
+          "name": "TextInput",
+          "type": "managed",
+          "projectId": "greMf1VEQkt4MFPhQZJ1ua",
+          "renderModuleFilePath": "plasmic/apa_nova_app/PlasmicTextInput.tsx",
+          "importSpec": {
+            "modulePath": "TextInput.tsx"
+          },
+          "cssFilePath": "plasmic/apa_nova_app/PlasmicTextInput.module.css",
+          "scheme": "blackbox",
+          "componentType": "component",
+          "plumeType": "text-input"
+        }
+      ],
+      "icons": [
+        {
+          "id": "AXxrvcIbLY2",
+          "name": "SearchsvgIcon",
+          "moduleFilePath": "plasmic/apa_nova_app/icons/PlasmicIcon__Searchsvg.tsx"
+        },
+        {
+          "id": "Bt309EfSp_c",
+          "name": "ChecksvgIcon",
+          "moduleFilePath": "plasmic/apa_nova_app/icons/PlasmicIcon__Checksvg.tsx"
+        }
+      ],
+      "images": [],
+      "indirect": false,
+      "globalContextsFilePath": "",
+      "codeComponents": []
+    }
+  ],
+  "globalVariants": {
+    "variantGroups": [
+      {
+        "id": "8SnQTvskqZ89K",
+        "name": "Screen",
+        "projectId": "greMf1VEQkt4MFPhQZJ1ua",
+        "contextFilePath": "plasmic/apa_nova_app/PlasmicGlobalVariant__Screen.tsx"
+      }
+    ]
+  },
+  "wrapPagesWithGlobalContexts": true,
+  "cliVersion": "0.1.175",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.175/dist/plasmic.schema.json"
+}
