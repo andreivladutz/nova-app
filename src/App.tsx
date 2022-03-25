@@ -1,18 +1,26 @@
-import React from "react";
+import { PlasmicCanvasHost } from "@plasmicapp/host";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Homepage from "./components/Homepage";
+
+import "./plasmic-host";
 
 function Index() {
   return (
     <div>
-      <header>
-        <h1 style={{ margin: 0 }}>
-          Welcome to Plasmic!
-        </h1>
-      </header>
-
-      <Homepage />
+      <Routes>
+        <Route path="/" element={<Homepage />} />
+        <Route path="/plasmic-host" element={<PlasmicCanvasHost />} />
+      </Routes>
     </div>
   );
 }
 
-export default Index;
+const App = () => {
+  return (
+    <BrowserRouter>
+      <Index />
+    </BrowserRouter>
+  );
+};
+
+export default App;

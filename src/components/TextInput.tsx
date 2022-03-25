@@ -12,7 +12,17 @@ function TextInput_(props: TextInputProps, ref: TextInputRef) {
     props,
     ref
   );
-  return <PlasmicTextInput {...plasmicProps} />;
+
+  const [value, setValue] = React.useState("");
+
+  return <PlasmicTextInput 
+    {...plasmicProps}
+    value={value}
+    onChange={(e) => {
+      const inputEl = e.target as HTMLInputElement;
+      setValue(inputEl.value);
+    }}
+  />;
 }
 
 const TextInput = React.forwardRef(TextInput_);
