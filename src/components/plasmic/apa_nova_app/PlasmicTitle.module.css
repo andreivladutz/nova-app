@@ -1,0 +1,36 @@
+.root {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  background: none;
+  position: relative;
+}
+.svg___64VTc {
+  position: relative;
+  object-fit: cover;
+  max-width: 100%;
+  color: var(--token-vS4Jcb5vV);
+  transform: scaleX(1) scaleY(1) scaleZ(1);
+  width: var(--token-TOt_S0K1v);
+  height: var(--token-TOt_S0K1v);
+  flex-shrink: 0;
+}
+.h1 {
+  position: relative;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  margin-bottom: 0px;
+  display: flex;
+  flex-direction: row;
+}
+.slotTargetChildren {
+  font-size: var(--token-tABVmaR4j);
+  color: var(--token-vS4Jcb5vV);
+  font-weight: 900;
+  letter-spacing: 0px;
+}

@@ -1,0 +1,38 @@
+.root {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
+  padding: 8px;
+}
+.svg {
+  position: relative;
+  object-fit: cover;
+  max-width: 100%;
+  color: var(--token-tNOsqwuRO);
+  width: var(--token-deNhK4X9r);
+  height: var(--token-deNhK4X9r);
+  margin-right: 5px;
+  flex-shrink: 0;
+}
+.freeBox {
+  width: auto;
+  height: auto;
+  max-width: 800px;
+  justify-content: center;
+  display: flex;
+  flex-direction: row;
+}
+.slotTargetChildren {
+  font-size: var(--token-0tqbj2vMV);
+  font-weight: 700;
+  color: var(--token-tNOsqwuRO);
+  text-align: center;
+  text-transform: capitalize;
+  letter-spacing: -1px;
+}

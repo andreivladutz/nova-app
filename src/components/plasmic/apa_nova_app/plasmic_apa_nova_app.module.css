@@ -1,4 +1,37 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter%3Aital%2Cwght%400%2C400%3B0%2C600%3B0%2C700%3B0%2C900&family=Inconsolata%3Aital%2Cwght%400%2C400%3B0%2C600%3B0%2C700%3B0%2C900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter%3Aital%2Cwght%400%2C300%3B0%2C400%3B0%2C600%3B0%2C700%3B0%2C900&family=Inconsolata%3Aital%2Cwght%400%2C300%3B0%2C400%3B0%2C600%3B0%2C700%3B0%2C900&display=swap");
+
+.plasmic_tokens {
+  --token-cM1ag74B7: #a4abb0;
+  --plasmic-token-base-color: var(--token-cM1ag74B7);
+  --token-wwiTpoTga: #f1f1f1;
+  --plasmic-token-bg-color: var(--token-wwiTpoTga);
+  --token-tABVmaR4j: 2.5rem;
+  --plasmic-token-title: var(--token-tABVmaR4j);
+  --token-TOt_S0K1v: 2.5rem;
+  --plasmic-token-title-size: var(--token-TOt_S0K1v);
+  --token-PffNV_POJ: 2rem;
+  --plasmic-token-card-title: var(--token-PffNV_POJ);
+  --token-vS4Jcb5vV: #36a2a2;
+  --plasmic-token-primary-color: var(--token-vS4Jcb5vV);
+  --token-bTKTLpOlW: #ffffff;
+  --plasmic-token-card-title-color: var(--token-bTKTLpOlW);
+  --token-0tqbj2vMV: 1rem;
+  --plasmic-token-text: var(--token-0tqbj2vMV);
+  --token-deNhK4X9r: 1rem;
+  --plasmic-token-text-size: var(--token-deNhK4X9r);
+  --token-h03p9-A9y: 1.5rem;
+  --plasmic-token-card-padding: var(--token-h03p9-A9y);
+  --token-Kr8DT3IKy: 20rem;
+  --plasmic-token-button-width: var(--token-Kr8DT3IKy);
+  --token-YUBHx8Uun: 1rem;
+  --plasmic-token-page-padding: var(--token-YUBHx8Uun);
+  --token-UqKpHP0DK: #d7d7d7;
+  --plasmic-token-secondary-base-color: var(--token-UqKpHP0DK);
+  --token-qTIjD5m4i: 2rem;
+  --plasmic-token-card-title-size: var(--token-qTIjD5m4i);
+  --token-tNOsqwuRO: #b94a48;
+  --plasmic-token-error-color: var(--token-tNOsqwuRO);
+}
 
 .plasmic_default_styles {
   --mixin-olqi66PSGQpx_font-family: "Inter";
@@ -116,6 +149,11 @@
   --mixin-qM5o-FkTIlsVy_position: relative;
   --mixin-qM5o-FkTIlsVy_list-style-type: disc;
   --mixin-QecSkt_eisWBG_color: #3291ff;
+}
+
+.plasmic_mixins {
+  --mixin-T3BVWKIez_box-shadow: 0px 4px 16px 2px #00000033;
+  --plasmic-mixin-card-style_box-shadow: var(--mixin-T3BVWKIez_box-shadow);
 }
 
 :where(.all) {

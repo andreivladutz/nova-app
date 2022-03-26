@@ -1,0 +1,124 @@
+.root {
+  box-shadow: 0px 4px 16px 2px #00000033;
+  display: flex;
+  flex-direction: column;
+  flex-column-gap: 0px;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  background: var(--token-cM1ag74B7);
+  position: relative;
+  border-radius: 2.5rem;
+  padding: var(--token-h03p9-A9y);
+}
+.rootbgHidden {
+  background: none;
+  box-shadow: none;
+}
+.rootdecorations_secondaryCard {
+  background: var(--token-UqKpHP0DK);
+}
+.cardTitle {
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 800px;
+  left: auto;
+  top: auto;
+  z-index: 1;
+  align-self: auto;
+  display: flex;
+  flex-direction: row;
+  min-width: 0;
+}
+.cardTitlecardType_ctaOnly {
+  display: none;
+}
+.cardTitlecardType_contentOnly {
+  display: none;
+}
+.freeBox {
+  display: flex;
+  position: relative;
+}
+.slotTargetCardTitle {
+  font-size: var(--token-PffNV_POJ);
+  font-weight: 900;
+  color: var(--token-bTKTLpOlW);
+  text-align: left;
+  text-transform: none;
+  line-height: 1;
+  letter-spacing: -2px;
+  user-select: none;
+}
+.cardContentWrapper {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  background: none;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  align-self: auto;
+  min-width: 100%;
+  padding: 0px;
+}
+.cardContentWrappercardType_ctaOnly {
+  display: none;
+}
+.cardContentWrappercontentCentered {
+  justify-content: center;
+  align-items: center;
+}
+.cardContentWrappershrinkedContents {
+  margin: 0px;
+}
+.slotTargetCardContent {
+  font-size: var(--token-PffNV_POJ);
+  font-weight: 900;
+  color: var(--token-bTKTLpOlW);
+  text-align: left;
+  text-transform: none;
+  line-height: 1;
+  letter-spacing: -2px;
+  user-select: none;
+}
+.ctaWrapper {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  background: none;
+  min-width: 0;
+  padding: 8px;
+}
+.ctaWrappercardType_noCta {
+  display: none;
+}
+.ctaWrappercardType_contentOnly {
+  display: none;
+}
+.button___2Yob2:global(.__wab_instance) {
+  max-width: 100%;
+  position: relative;
+}
+.svg__lMud {
+  position: relative;
+  object-fit: cover;
+  width: 1em;
+  height: 1em;
+}
+.svg___9U1Sv {
+  position: relative;
+  object-fit: cover;
+  width: 1em;
+  height: 1em;
+}
