@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@netlify/functions": "^1.0.0",
+    "@notionhq/client": "^1.0.4",
     "@plasmicapp/cli": "^0.1.175",
     "@plasmicapp/host": "^1.0.29",
     "@plasmicapp/react-web": "^0.2.91",
