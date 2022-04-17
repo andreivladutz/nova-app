@@ -6,6 +6,8 @@ export type ArrayParam<T extends Array<any>> = T extends Array<infer P>
   ? P
   : never;
 
+export type PickSubset<Subset, T> = T extends Subset ? T : never;
+
 export type UnionToIntersection<U> = (
   U extends any ? (k: U) => void : never
 ) extends (k: infer I) => void
