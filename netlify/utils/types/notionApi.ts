@@ -1,6 +1,7 @@
 import {
   QueryDatabaseParameters,
   QueryDatabaseResponse,
+  GetDatabaseResponse,
 } from "@notionhq/client/build/src/api-endpoints";
 
 import { ArrayParam, PickSubset, UnionToIntersection } from "./utilitary";
@@ -10,6 +11,7 @@ export {
   QueryDatabaseParameters,
   // Query fn (...params) => Promise<QueryDatabaseResponse>
   QueryDatabaseResponse,
+  GetDatabaseResponse,
 };
 
 export type DbQueryFilter = QueryDatabaseParameters["filter"];
@@ -23,9 +25,11 @@ export type PropertyFilter = ArrayParam<
 // All possible property types for filters "rich_text" | "number" | ...
 export type PropertyFilterType = PropertyFilter["type"];
 
+type PickPropFilterSubset<Type> = PickSubset<{ type?: Type }, PropertyFilter>;
 // The filter having { type: "rich_text" }
-type PickTextSubset<T> = PickSubset<{ type?: "rich_text" }, T>;
-export type TextFilterType = PickTextSubset<PropertyFilter>;
+export type TextFilterType = PickPropFilterSubset<"rich_text">;
+// The filter having { type: "number" }
+export type NumberFilterType = PickPropFilterSubset<"number">;
 
 export type DbQuerySorts = QueryDatabaseParameters["sorts"];
 export type DbQuerySort = DbQuerySorts[number];

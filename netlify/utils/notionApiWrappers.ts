@@ -39,10 +39,18 @@ const createNotionApiWrapper = (notionToken: string) => {
         })
         .then(queryProjection);
 
+  const dbSchema = (dbId: string) =>
+    notion.databases
+      .retrieve({ database_id: dbId })
+      .then((value) => value.properties);
+
   return {
     dbQuery,
+    dbSchema,
   };
 };
+
+export type DbWrapper = ReturnType<typeof createDbWrapper>;
 
 export const createDbWrapper = (notionToken: string, dbId: string) => {
   const apiWrapper = createNotionApiWrapper(notionToken);
@@ -76,6 +84,8 @@ export const createDbWrapper = (notionToken: string, dbId: string) => {
   const dbWrapper = {
     getFirst,
     getN,
+
+    dbSchema: () => apiWrapper.dbSchema(dbId),
 
     orderBy,
     filter: filterMethod,
