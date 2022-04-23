@@ -1,16 +1,24 @@
 import { Client } from "@notionhq/client";
+import { NotionAcessPrototype, notionPage } from "./notionUtils/notionPage";
+import {
+  NotionObject,
+  plainObjectToNotionObject,
+} from "./notionUtils/schemaObjectMappings";
 import {
   DbQueryFilter,
   DbQuerySorts,
   DbSortDirection,
   QueryDatabaseResponse,
   QueryResultType,
+  UpdatePageParameters,
 } from "./types/notionApi";
 
-const queryProjection = (queryResult: QueryDatabaseResponse) =>
-  queryResult.results.map((result) => (result as QueryResultType).properties);
-
-export type QueryProjection = ReturnType<typeof queryProjection>;
+// Project all query results (made up of notion schema-following objects)
+// into wrapper objects acting as plain objects with key and value
+const queryProjection = <O extends object>(
+  queryResult: QueryDatabaseResponse
+) =>
+  queryResult.results.map((result) => notionPage<O>(result as QueryResultType));
 
 const createNotionApiWrapper = (notionToken: string) => {
   const notion = new Client({ auth: notionToken });
@@ -30,35 +38,62 @@ const createNotionApiWrapper = (notionToken: string) => {
       // Notion-like sorts
       sorts?: DbQuerySorts;
     }) =>
-      notion.databases
-        .query({
-          database_id: dbId,
-          filter,
-          sorts,
-          page_size: pageSize,
-        })
-        .then(queryProjection);
+      notion.databases.query({
+        database_id: dbId,
+        filter,
+        sorts,
+        page_size: pageSize,
+      });
 
   const dbSchema = (dbId: string) =>
     notion.databases
       .retrieve({ database_id: dbId })
       .then((value) => value.properties);
 
+  const dbPageCreate = (dbId: string, notionObject: NotionObject) =>
+    notion.pages.create({
+      parent: {
+        database_id: dbId,
+      } as { database_id: string; page_id: string },
+      properties: notionObject,
+    });
+
+  const dbPageUpdate = (pageId: string, notionObject: NotionObject) =>
+    notion.pages.update({
+      page_id: pageId,
+      properties: notionObject as UpdatePageParameters["properties"],
+    });
+
   return {
     dbQuery,
     dbSchema,
+    dbPageCreate,
+    dbPageUpdate,
   };
 };
 
 export type DbWrapper = ReturnType<typeof createDbWrapper>;
 
-export const createDbWrapper = (notionToken: string, dbId: string) => {
+export const createDbWrapper = <O extends object>(
+  notionToken: string,
+  dbId: string
+) => {
   const apiWrapper = createNotionApiWrapper(notionToken);
   const sorts = [] as DbQuerySorts;
   let filter: DbQueryFilter | undefined;
 
-  const getFirst = () => apiWrapper.dbQuery(dbId, 1)({ sorts, filter });
-  const getN = (n: number) => apiWrapper.dbQuery(dbId, n)({ sorts, filter });
+  const query = (itemsCount: number) =>
+    apiWrapper
+      .dbQuery(
+        dbId,
+        itemsCount
+      )({ sorts, filter })
+      .then((results) => queryProjection<O>(results));
+
+  const getFirst = async () => (await query(1))[0];
+  const getN = (n: number) => query(n);
+
+  const dbSchema = () => apiWrapper.dbSchema(dbId);
 
   const filterMethod = function (filterObject: DbQueryFilter) {
     filter = filterObject;
@@ -81,14 +116,41 @@ export const createDbWrapper = (notionToken: string, dbId: string) => {
     };
   };
 
+  // The create wrapper abstracts away the db schema fetching beforehand
+  // and transforming the plain object to the notion object
+  const create = async (plainObject: O) => {
+    const schema = await dbSchema();
+
+    return apiWrapper.dbPageCreate(
+      dbId,
+      plainObjectToNotionObject(plainObject, schema)
+    );
+  };
+
+  // The update object has to be similar to (if not "a") notionPage wrapper
+  // s.t. we have access to the page id to be updated
+  const update = (plainUpdateObject: Partial<O> & NotionAcessPrototype) =>
+    apiWrapper.dbPageUpdate(
+      plainUpdateObject.$notion.pageId,
+      plainObjectToNotionObject(
+        plainUpdateObject,
+        // The notion object's properties can be used as schema as they have a "type"
+        // property in them which is sufficient for translating back to a notion object
+        plainUpdateObject.$notion.originalProperties
+      )
+    );
+
   const dbWrapper = {
     getFirst,
     getN,
 
-    dbSchema: () => apiWrapper.dbSchema(dbId),
+    dbSchema,
 
     orderBy,
     filter: filterMethod,
+
+    create,
+    update,
   };
 
   dbWrapper.orderBy = dbWrapper.orderBy.bind(dbWrapper);

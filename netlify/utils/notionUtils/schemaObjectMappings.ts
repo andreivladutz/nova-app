@@ -1,23 +1,21 @@
-import { QueryProjection } from "../notionApiWrappers";
-import { GetDatabaseResponse } from "../types/notionApi";
-import { PickSubset } from "../types/utilitary";
+import { GetDatabaseResponse, QueryResultType } from "../types/notionApi";
+import { RemovePropFromUnion } from "../types/utilitary";
 
-type NotionObject = QueryProjection[number];
+type NotionObject = QueryResultType["properties"];
 type NotionObjectProperty = NotionObject[string];
-// Hack to remove the "id" prop from each
-// property schema type in the NotionObjectProperty union
-type MapNotionPropertyTypes = {
-  [K in NotionObjectProperty["type"]]: Omit<
-    PickSubset<{ type: K }, NotionObjectProperty>,
-    "id"
-  >;
-};
-type NotionObjectPropertyNoId =
-  MapNotionPropertyTypes[keyof MapNotionPropertyTypes];
+type NotionObjectPropertyNoId = RemovePropFromUnion<
+  NotionObjectProperty,
+  "type",
+  "id"
+>;
 type NotionObjectNoId = Record<string, NotionObjectPropertyNoId>;
 
-type DbSchema = GetDatabaseResponse["properties"];
-type PropertySchema = DbSchema[string];
+export { NotionObjectNoId as NotionObject };
+
+type PropertySchema = {
+  type: GetDatabaseResponse["properties"][string]["type"];
+};
+type DbSchema = Record<string, PropertySchema>;
 
 const schemaTypedPropertyToValue = (schemaProp: NotionObject[string]) => {
   switch (schemaProp.type) {
@@ -161,9 +159,7 @@ export const plainObjectToNotionObject = <O extends object>(
 ): NotionObjectNoId => {
   const schemaEntries = Object.entries(schema);
 
-  return schemaEntries.reduce((notionObj, [_, schemaDescription]) => {
-    const { name } = schemaDescription;
-
+  return schemaEntries.reduce((notionObj, [name, schemaDescription]) => {
     // The plain object does not contain this prop name
     // that we are just iterating from the prop schema description object
     if (!plainObj.hasOwnProperty(name)) {
@@ -176,8 +172,3 @@ export const plainObjectToNotionObject = <O extends object>(
     };
   }, {} as NotionObjectNoId);
 };
-
-// The result of page query properties array to "plain" js objects with key and value
-export const queryToPlainObjects = <O extends object>(
-  queryProjectedProps: QueryProjection
-) => queryProjectedProps.map((obj) => notionObjectToPlainObject<O>(obj));

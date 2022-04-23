@@ -2,6 +2,7 @@ import {
   QueryDatabaseParameters,
   QueryDatabaseResponse,
   GetDatabaseResponse,
+  UpdatePageParameters,
 } from "@notionhq/client/build/src/api-endpoints";
 
 import { ArrayParam, PickSubset, UnionToIntersection } from "./utilitary";
@@ -12,6 +13,7 @@ export {
   // Query fn (...params) => Promise<QueryDatabaseResponse>
   QueryDatabaseResponse,
   GetDatabaseResponse,
+  UpdatePageParameters,
 };
 
 export type DbQueryFilter = QueryDatabaseParameters["filter"];

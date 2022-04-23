@@ -5,39 +5,38 @@ import { createDbWrapper } from "../utils/notionApiWrappers";
 import { filter } from "../utils/notionUtils/filter";
 import { Consumption, consumptionKeys } from "../utils/domain/dbsSchema";
 import { apiErrors } from "../utils/backEndUtils";
-import { plainObjectToNotionObject } from "../utils/notionUtils/schemaObjectMappings";
+import { toIsoString } from "../utils/notionUtils/toIsoString";
 
 async function getConsumption(billId: number) {
-  const dbWrapper = createDbWrapper(
+  const dbWrapper = createDbWrapper<Consumption>(
     notionCreds.token,
     notionCreds.dbId.consumptions
   );
 
   try {
-    // return await dbWrapper.orderBy("dateEmitted").ascending().getFirst();
+    const consumptionObj = await dbWrapper
+      .filter(filter(consumptionKeys.billId).number.equals(billId))
+      .getFirst();
 
-    // return await dbWrapper
-    // .filter(filter(consumptionKeys.billId).number.equals(billId))
-    // .getN(10);
+    consumptionObj.indexBathroom = 0;
+    consumptionObj.indexWC = 0;
+    consumptionObj.indexKitchen = 0;
 
-    const schema = await dbWrapper.dbSchema();
+    return dbWrapper.update(consumptionObj);
 
-    return plainObjectToNotionObject<Consumption>(
-      {
-        name: "foo test",
-        indexWC: 1234,
-        indexBathroom: 1345,
-        indexKitchen: 1345,
-        date: new Date().toISOString(),
-        confirmed: false,
-        total: 100,
-        // External key to Users
-        apartmentNo: 3,
-        // External key to Bills
-        billId: 1,
-      },
-      schema
-    );
+    // return dbWrapper.create({
+    //   name: "foo test",
+    //   indexWC: 1234,
+    //   indexBathroom: 1345,
+    //   indexKitchen: 1345,
+    //   date: toIsoString(new Date()),
+    //   confirmed: false,
+    //   total: 100,
+    //   // External key to Users
+    //   apartmentNo: 3,
+    //   // External key to Bills
+    //   billId,
+    // });
   } catch (error) {
     console.error(error.body);
   }
