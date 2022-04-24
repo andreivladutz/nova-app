@@ -4,8 +4,10 @@ import * as React from "react";
 import {
   PlasmicWaterConsumption,
   DefaultWaterConsumptionProps,
-} from "./plasmic/apa_nova_app/PlasmicWaterConsumption";
+} from "../components/plasmic/apa_nova_app/PlasmicWaterConsumption";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
+import { ROUTES } from "../utils/CONST";
+import useAppNavigation from "../hooks/useAppNavigation";
 
 export interface WaterConsumptionProps extends DefaultWaterConsumptionProps {}
 
@@ -13,14 +15,15 @@ function WaterConsumption_(
   props: WaterConsumptionProps,
   ref: HTMLElementRefOf<"div">
 ) {
+  const { goBackTo } = useAppNavigation();
+
   return (
     <PlasmicWaterConsumption
       root={{ ref }}
       {...props}
       backButton={{
         onClick() {
-          // eslint-disable-next-line
-          history.back();
+          goBackTo(ROUTES.HOMEPAGE);
         },
       }}
     />

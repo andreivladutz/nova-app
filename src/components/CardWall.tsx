@@ -3,7 +3,7 @@
 import * as React from "react";
 import {
   PlasmicCardWall,
-  DefaultCardWallProps
+  DefaultCardWallProps,
 } from "./plasmic/apa_nova_app/PlasmicCardWall";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 
@@ -23,8 +23,6 @@ import { HTMLElementRefOf } from "@plasmicapp/react-web";
 export interface CardWallProps extends DefaultCardWallProps {}
 
 function CardWall_(props: CardWallProps, ref: HTMLElementRefOf<"div">) {
-  console.log(props);
-  console.log(ref);
   // Use PlasmicCardWall to render this component as it was
   // designed in Plasmic, by activating the appropriate variants,
   // attaching the appropriate event handlers, etc.  You

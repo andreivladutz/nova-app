@@ -4,15 +4,15 @@ import * as React from "react";
 import {
   PlasmicHomepage,
   DefaultHomepageProps,
-} from "./plasmic/apa_nova_app/PlasmicHomepage";
+} from "../components/plasmic/apa_nova_app/PlasmicHomepage";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../utils/CONST";
+import useAppNavigation from "../hooks/useAppNavigation";
 
 export interface HomepageProps extends DefaultHomepageProps {}
 
 function Homepage_(props: HomepageProps, ref: HTMLElementRefOf<"div">) {
-  const navigate = useNavigate();
+  const { navigate } = useAppNavigation();
 
   return (
     <PlasmicHomepage
