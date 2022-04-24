@@ -2,7 +2,8 @@ import { Response } from "@netlify/functions/dist/function/response";
 import { isNotionClientError } from "@notionhq/client";
 import { PromiseParam } from "./types/utilitary";
 
-type ApiError = {
+// Used on the FE by the consuming client
+export type ApiError = {
   isNotionErr?: boolean;
   message: string;
 };
@@ -54,6 +55,6 @@ export const notionCallWithErrHandling = async <P extends Promise<any>>(
     }
 
     console.log((error as Error).message);
-    return handlerError(apiErrors.serverError(error.message));
+    return handlerError(apiErrors.serverError((error as Error).message));
   }
 };

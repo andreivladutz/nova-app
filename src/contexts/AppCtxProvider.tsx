@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import useDefaultQueries from "../hooks/useDefaultQueries";
 import { QS_PARAMS, ROUTES } from "../utils/CONST";
 import throwingDefault from "./utils/throwingDefault";
 
@@ -54,6 +55,8 @@ const AppCtx = React.createContext<AppCtxProps>(throwingDefault("AppContext"));
 
 export const AppCtxProvider = ({ children }: React.PropsWithChildren<{}>) => {
   const state = useAppStateProvider();
+  // TODO: HANDLE TOKEN MISSING ERROR
+  useDefaultQueries(state.userToken || "");
 
   return (
     <AppCtx.Provider value={state}>
