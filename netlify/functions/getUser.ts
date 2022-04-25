@@ -1,6 +1,15 @@
 import { Handler } from "@netlify/functions";
-import { notionCallWithErrHandling } from "../utils/backEndUtils";
-import { User } from "../utils/domain/dbsSchema";
+import {
+  apiErrors,
+  handlerError,
+  notionCallWithErrHandling,
+  onSuccess,
+  QsParamsType,
+  server,
+  successResult,
+} from "../utils/backEndUtils";
+import { User, userKeys } from "../utils/domain/dbsSchema";
+import { ErrorCode } from "../utils/domain/errorCode";
 import { createDbWrapper } from "../utils/notionApiWrappers";
 import notionCreds from "../utils/notionCreds";
 import { filter } from "../utils/notionUtils/filter";
@@ -8,29 +17,41 @@ import { filter } from "../utils/notionUtils/filter";
 const notionToken = notionCreds.token;
 const databaseId = notionCreds.dbId.users;
 
-function getItem() {
+function getUser(token: string) {
   const dbWrapper = createDbWrapper<User>(notionToken, databaseId);
 
   // return await dbWrapper.orderBy("dateEmitted").ascending().getFirst();
 
-  return dbWrapper
-    .filter(filter("token").text.contains(""))
-    .orderBy("name")
-    .ascending()
-    .getN(10);
+  return dbWrapper.filter(filter(userKeys.token).text.equals(token)).getFirst();
 }
 
-const handler: Handler = async () => {
-  const response = await notionCallWithErrHandling(getItem());
+export const userNotFoundErr = handlerError(
+  apiErrors.notFound("The user was not found", ErrorCode.USER_NOT_FOUND)
+);
 
-  if (response.success === false) {
-    return response.error;
-  }
+const handler: Handler = (event) =>
+  server
+    .get(event, {
+      token: {
+        type: QsParamsType.string,
+        requiredErr: "Token parameter is missing",
+        invalidErr: "Token parameter is invalid",
+      },
+    })
+    .then(
+      onSuccess((parsedQsParams) =>
+        notionCallWithErrHandling(getUser(parsedQsParams.token))
+      )
+    )
+    .then(
+      onSuccess(async (user) => {
+        if (!user) {
+          return userNotFoundErr;
+        }
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify(response.result),
-  };
-};
+        return successResult(user);
+      })
+    )
+    .then(server.sendResponse);
 
-export { handler };
+export { handler, getUser };

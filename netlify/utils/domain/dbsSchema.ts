@@ -47,3 +47,10 @@ export const consumptionKeys = keysArrayToMap<Consumption>([
   "apartmentNo",
   "billId",
 ] as const);
+
+export const userKeys = keysArrayToMap<User>([
+  "name",
+  "apartmentNo",
+  "token",
+  "url",
+] as const);

@@ -2,3 +2,4 @@
 
 export * from "./utils/domain/dbsSchema";
 export type { ApiError } from "./utils/backEndUtils";
+export { ErrorCode } from "./utils/domain/errorCode";

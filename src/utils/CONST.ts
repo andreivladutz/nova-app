@@ -20,4 +20,6 @@ export enum CLIENT_ERR_CODES {
 export const ERRORS_LOCALIZED = {
   [CLIENT_ERR_CODES.MISSING_USER_TOKEN]:
     "Token-ul de identificare este inexistent",
+  [CLIENT_ERR_CODES.INVALID_USER_TOKEN]:
+    "Token-ul de identificare este invalid",
 };
