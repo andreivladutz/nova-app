@@ -31,7 +31,7 @@ const schemaTypedPropertyToValue = (schemaProp: NotionObject[string]) => {
       );
     // Yet very naive date interpretation -> only dates with start prop supported as of yet
     case "date":
-      return schemaProp.date.start;
+      return schemaProp.date?.start || "";
     case "title":
       return schemaProp.title.reduce(
         (accText, currText) => `${accText}${currText.plain_text}`,
@@ -50,12 +50,13 @@ const schemaTypedPropertyToValue = (schemaProp: NotionObject[string]) => {
         case "boolean":
           return schemaProp.formula.boolean;
         case "date":
-          return schemaProp.formula.date.start;
+          return schemaProp.formula.date?.start || "";
         case "string":
           return schemaProp.formula.string;
         case "number":
           return schemaProp.formula.number;
       }
+    // eslint-disable-next-line no-fallthrough
     default:
       throw new Error(
         `Unsupported schemaProp type detected ("${schemaProp.type}") when converting to plain object`

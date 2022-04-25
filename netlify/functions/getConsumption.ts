@@ -80,7 +80,7 @@ const handler: Handler = (event) =>
       },
     })
     .then(
-      onSuccess(async ({ billId, token }) =>
+      onSuccess(({ billId, token }) =>
         notionCallWithErrHandling(getConsumption(billId, token))
       )
     )

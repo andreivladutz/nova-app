@@ -54,3 +54,13 @@ export const userKeys = keysArrayToMap<User>([
   "token",
   "url",
 ] as const);
+
+export const billKeys = keysArrayToMap<Bill>([
+  "name",
+  "dateEmitted",
+  "dueDate",
+  "total",
+  "penalties",
+  "file",
+  "billId",
+] as const);

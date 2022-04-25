@@ -20,8 +20,6 @@ const databaseId = notionCreds.dbId.users;
 function getUser(token: string) {
   const dbWrapper = createDbWrapper<User>(notionToken, databaseId);
 
-  // return await dbWrapper.orderBy("dateEmitted").ascending().getFirst();
-
   return dbWrapper.filter(filter(userKeys.token).text.equals(token)).getFirst();
 }
 
