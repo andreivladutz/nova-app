@@ -3,6 +3,7 @@ import {
   QueryDatabaseResponse,
   GetDatabaseResponse,
   UpdatePageParameters,
+  CreatePageResponse,
 } from "@notionhq/client/build/src/api-endpoints";
 
 import { ArrayParam, PickSubset, UnionToIntersection } from "./utilitary";
@@ -15,6 +16,11 @@ export {
   GetDatabaseResponse,
   UpdatePageParameters,
 };
+
+export type SuccessfulCreatePageResponse = PickSubset<
+  { properties: any },
+  CreatePageResponse
+>;
 
 export type DbQueryFilter = QueryDatabaseParameters["filter"];
 // Utility to pick the { or: .. } object type from a union of types

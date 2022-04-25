@@ -2,9 +2,11 @@ import { Client } from "@notionhq/client";
 import { NotionAcessPrototype, notionPage } from "./notionUtils/notionPage";
 import {
   NotionObject,
+  notionObjectToPlainObject,
   plainObjectToNotionObject,
 } from "./notionUtils/schemaObjectMappings";
 import {
+  SuccessfulCreatePageResponse,
   DbQueryFilter,
   DbQuerySorts,
   DbSortDirection,
@@ -91,7 +93,7 @@ export const createDbWrapper = <O extends object>(
       .then((results) => queryProjection<O>(results));
 
   const getFirst = async () => (await query(1))[0];
-  const getN = (n: number) => query(n);
+  const getN = (n = 100) => query(n);
 
   const dbSchema = () => apiWrapper.dbSchema(dbId);
 
@@ -121,10 +123,13 @@ export const createDbWrapper = <O extends object>(
   const create = async (plainObject: O) => {
     const schema = await dbSchema();
 
-    return apiWrapper.dbPageCreate(
-      dbId,
-      plainObjectToNotionObject(plainObject, schema)
-    );
+    return apiWrapper
+      .dbPageCreate(dbId, plainObjectToNotionObject(plainObject, schema))
+      .then((notionPage) =>
+        notionObjectToPlainObject(
+          (notionPage as SuccessfulCreatePageResponse).properties
+        )
+      );
   };
 
   // The update object has to be similar to (if not "a") notionPage wrapper

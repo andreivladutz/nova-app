@@ -5,8 +5,6 @@ import { createDbWrapper } from "../utils/notionApiWrappers";
 import { filter } from "../utils/notionUtils/filter";
 import { Consumption, consumptionKeys } from "../utils/domain/dbsSchema";
 import {
-  apiErrors,
-  handlerError,
   notionCallWithErrHandling,
   onSuccess,
   QsParamsType,
@@ -14,7 +12,6 @@ import {
   successResult,
 } from "../utils/backEndUtils";
 import { toIsoString } from "../utils/notionUtils/toIsoString";
-import { ErrorCode } from "../utils/domain/errorCode";
 import { getUser, userNotFoundErr } from "./getUser";
 
 async function getConsumption(billId: number, userToken: string) {
@@ -29,29 +26,43 @@ async function getConsumption(billId: number, userToken: string) {
     notionCreds.dbId.consumptions
   );
 
-  return await dbWrapper
+  // All the consumptions, for all users, for the current bill
+  // Prefer to filter-fetch by bill id, as there can only be n consumptions
+  // for one billId where n is the number of existing users
+  const billConsumptions = await dbWrapper
     .filter(filter(consumptionKeys.billId).number.equals(billId))
-    .getFirst();
+    .getN();
+
+  // The consumption for this user, if found
+  const userConsumption = billConsumptions.find(
+    (consumption) => consumption.apartmentNo === user.apartmentNo
+  );
+
+  if (userConsumption) {
+    return userConsumption;
+  }
+
+  // Warning: A user with a token can create an infinite number
+  // of consumptions by generating random bill ids
+  return dbWrapper.create({
+    name: `Ap-${user.apartmentNo}-bill-${billId}`,
+    indexWC: 0,
+    indexBathroom: 0,
+    indexKitchen: 0,
+    date: toIsoString(new Date()),
+    confirmed: false,
+    total: 0,
+    // External key to Users
+    apartmentNo: user.apartmentNo,
+    // External key to Bills
+    billId,
+  });
 
   // consumptionObj.indexBathroom = 0;
   // consumptionObj.indexWC = 0;
   // consumptionObj.indexKitchen = 0;
 
   // return dbWrapper.update(consumptionObj);
-
-  // return dbWrapper.create({
-  //   name: "foo test",
-  //   indexWC: 1234,
-  //   indexBathroom: 1345,
-  //   indexKitchen: 1345,
-  //   date: toIsoString(new Date()),
-  //   confirmed: false,
-  //   total: 100,
-  //   // External key to Users
-  //   apartmentNo: 3,
-  //   // External key to Bills
-  //   billId,
-  // });
 }
 
 const handler: Handler = (event) =>
