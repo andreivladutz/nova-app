@@ -1,4 +1,4 @@
-import { ApiError } from "../../netlify/shared";
+import { ApiError, ErrorCode } from "../shared";
 
 // All the possible used http verbs for this app
 export enum HttpVerb {
@@ -32,7 +32,7 @@ const unexpectedHttpErr = (reason: string) =>
   new HttpClientError(
     "Unexpected error when calling the API",
     0,
-    { message: reason },
+    { message: reason, errorCode: ErrorCode.GENERIC_ERROR },
     true
   );
 

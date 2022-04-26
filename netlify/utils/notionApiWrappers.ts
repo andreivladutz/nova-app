@@ -13,6 +13,7 @@ import {
   QueryDatabaseResponse,
   QueryResultType,
   UpdatePageParameters,
+  SuccessfulUpdatePageResponse,
 } from "./types/notionApi";
 
 // Project all query results (made up of notion schema-following objects)
@@ -125,25 +126,27 @@ export const createDbWrapper = <O extends object>(
 
     return apiWrapper
       .dbPageCreate(dbId, plainObjectToNotionObject(plainObject, schema))
-      .then((notionPage) =>
-        notionObjectToPlainObject(
-          (notionPage as SuccessfulCreatePageResponse).properties
-        )
+      .then((notionObject) =>
+        notionPage<O>(notionObject as SuccessfulCreatePageResponse)
       );
   };
 
   // The update object has to be similar to (if not "a") notionPage wrapper
   // s.t. we have access to the page id to be updated
   const update = (plainUpdateObject: Partial<O> & NotionAcessPrototype) =>
-    apiWrapper.dbPageUpdate(
-      plainUpdateObject.$notion.pageId,
-      plainObjectToNotionObject(
-        plainUpdateObject,
-        // The notion object's properties can be used as schema as they have a "type"
-        // property in them which is sufficient for translating back to a notion object
-        plainUpdateObject.$notion.originalProperties
+    apiWrapper
+      .dbPageUpdate(
+        plainUpdateObject.$notion.pageId,
+        plainObjectToNotionObject(
+          plainUpdateObject,
+          // The notion object's properties can be used as schema as they have a "type"
+          // property in them which is sufficient for translating back to a notion object
+          plainUpdateObject.$notion.originalProperties
+        )
       )
-    );
+      .then((notionObject) =>
+        notionPage<O>(notionObject as SuccessfulUpdatePageResponse)
+      );
 
   const dbWrapper = {
     getFirst,

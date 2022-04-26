@@ -1,4 +1,4 @@
-import { User } from "../../netlify/shared";
+import { User } from "../shared";
 import { client } from "./client";
 
 export const getUser = (token: string) => {

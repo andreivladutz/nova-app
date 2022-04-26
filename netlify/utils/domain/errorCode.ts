@@ -1,7 +1,0 @@
-export enum ErrorCode {
-  GENERIC_ERROR = 0,
-  USER_NOT_FOUND = 1,
-  MISSING_PARAMETER = 2,
-  INVALID_PARAMETER = 3,
-  BILL_NOT_FOUND = 4,
-}

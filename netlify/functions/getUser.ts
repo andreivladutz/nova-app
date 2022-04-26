@@ -8,8 +8,7 @@ import {
   server,
   successResult,
 } from "../utils/backEndUtils";
-import { User, userKeys } from "../utils/domain/dbsSchema";
-import { ErrorCode } from "../utils/domain/errorCode";
+import { User, userKeys, ErrorCode } from "../utils/sharedDomain";
 import { createDbWrapper } from "../utils/notionApiWrappers";
 import notionCreds from "../utils/notionCreds";
 import { filter } from "../utils/notionUtils/filter";

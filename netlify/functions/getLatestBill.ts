@@ -7,12 +7,11 @@ import {
   successResult,
   apiErrors,
 } from "../utils/backEndUtils";
-import { Bill, billKeys } from "../utils/domain/dbsSchema";
-import { ErrorCode } from "../utils/domain/errorCode";
+import { ErrorCode, Bill, billKeys } from "../utils/sharedDomain";
 import { createDbWrapper } from "../utils/notionApiWrappers";
 import notionCreds from "../utils/notionCreds";
 
-const getLatestBill = () => {
+export const getLatestBill = () => {
   const dbWrapper = createDbWrapper<Bill>(
     notionCreds.token,
     notionCreds.dbId.bills

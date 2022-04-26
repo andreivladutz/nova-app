@@ -27,6 +27,7 @@ export type Bill = {
   penalties: number;
   file: string;
   billId: number;
+  waterConsumption: number;
 };
 
 const keysArrayToMap = <T extends object>(keysArr: readonly (keyof T)[]) =>
@@ -63,4 +64,5 @@ export const billKeys = keysArrayToMap<Bill>([
   "penalties",
   "file",
   "billId",
+  "waterConsumption",
 ] as const);

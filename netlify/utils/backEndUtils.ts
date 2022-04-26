@@ -3,7 +3,7 @@ import { Response } from "@netlify/functions/dist/function/response";
 import { Event } from "@netlify/functions/dist/function/event";
 import { isNotionClientError } from "@notionhq/client";
 import { PromiseParam } from "./types/utilitary";
-import { ErrorCode } from "./domain/errorCode";
+import { ErrorCode } from "../utils/sharedDomain";
 
 // Used on the FE by the consuming client
 export type ApiError = {
@@ -181,8 +181,35 @@ const getHandler = <T extends WithQsParams>(
 ): Promise<ResultOrHandlerErr<ParsedQsParams<T>, Response>> =>
   Promise.resolve(parseQsParameters(event, withQsParams));
 
+const putHandler = async <BodyType extends object>(
+  event: Parameters<Handler>[0]
+) => {
+  const { path, httpMethod } = event;
+
+  if (!event.body) {
+    return handlerError(
+      apiErrors.badRequest(
+        `Missing body for ${httpMethod} ${path}`,
+        ErrorCode.MISSING_BODY
+      )
+    );
+  }
+
+  try {
+    return successResult(JSON.parse(event.body) as BodyType);
+  } catch {
+    return handlerError(
+      apiErrors.badRequest(
+        `Invalid body for ${httpMethod} ${path}`,
+        ErrorCode.INVALID_BODY
+      )
+    );
+  }
+};
+
 export const server = {
   get: getHandler,
+  put: putHandler,
 
   sendResponse: async <R, E>(resultOrError: ResultOrHandlerErr<R, E>) => {
     if (!resultOrError.success) {

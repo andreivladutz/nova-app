@@ -3,6 +3,7 @@ import {
   QueryDatabaseResponse,
   GetDatabaseResponse,
   UpdatePageParameters,
+  UpdatePageResponse,
   CreatePageResponse,
 } from "@notionhq/client/build/src/api-endpoints";
 
@@ -20,6 +21,11 @@ export {
 export type SuccessfulCreatePageResponse = PickSubset<
   { properties: any },
   CreatePageResponse
+>;
+
+export type SuccessfulUpdatePageResponse = PickSubset<
+  { properties: any },
+  UpdatePageResponse
 >;
 
 export type DbQueryFilter = QueryDatabaseParameters["filter"];

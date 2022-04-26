@@ -1,5 +1,5 @@
 import { useQuery } from "react-query";
-import { User } from "../../netlify/shared";
+import { User } from "../shared";
 import { HttpClientError } from "../apiConsumer/client";
 import { getUser } from "../apiConsumer/queries";
 

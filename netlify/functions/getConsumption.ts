@@ -3,7 +3,7 @@ import notionCreds from "../utils/notionCreds";
 
 import { createDbWrapper } from "../utils/notionApiWrappers";
 import { filter } from "../utils/notionUtils/filter";
-import { Consumption, consumptionKeys } from "../utils/domain/dbsSchema";
+import { Consumption, consumptionKeys } from "../utils/sharedDomain";
 import {
   notionCallWithErrHandling,
   onSuccess,
@@ -13,8 +13,13 @@ import {
 } from "../utils/backEndUtils";
 import { toIsoString } from "../utils/notionUtils/toIsoString";
 import { getUser, userNotFoundErr } from "./getUser";
+import { ConsumptionResponse } from "../utils/sharedDomain";
 
-async function getConsumption(billId: number, userToken: string) {
+export async function getConsumption(
+  billId: number,
+  userToken: string,
+  createsIfNotFound = true
+) {
   const user = await getUser(userToken);
 
   if (!user) {
@@ -42,10 +47,18 @@ async function getConsumption(billId: number, userToken: string) {
     return userConsumption;
   }
 
+  // By default, if a consumption does not exist
+  // for the current user and the billId, a new consumption is created
+  if (!createsIfNotFound) {
+    return null;
+  }
+
   // Warning: A user with a token can create an infinite number
   // of consumptions by generating random bill ids
   return dbWrapper.create({
     name: `Ap-${user.apartmentNo}-bill-${billId}`,
+    // TODO: The index values should be the ones prior to this consumption
+    // i.e. the consumption belonging to this user and latest date
     indexWC: 0,
     indexBathroom: 0,
     indexKitchen: 0,
@@ -57,12 +70,6 @@ async function getConsumption(billId: number, userToken: string) {
     // External key to Bills
     billId,
   });
-
-  // consumptionObj.indexBathroom = 0;
-  // consumptionObj.indexWC = 0;
-  // consumptionObj.indexKitchen = 0;
-
-  // return dbWrapper.update(consumptionObj);
 }
 
 const handler: Handler = (event) =>
@@ -92,6 +99,11 @@ const handler: Handler = (event) =>
         if (!consumption) {
           return userNotFoundErr;
         }
+
+        // Add the notion pageId to the response
+        // so the client can reference it in later api calls
+        (consumption as Consumption as ConsumptionResponse).consumptionPageId =
+          consumption.$notion.pageId;
 
         return successResult(consumption);
       })
