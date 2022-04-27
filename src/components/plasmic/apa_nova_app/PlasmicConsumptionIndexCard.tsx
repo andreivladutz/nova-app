@@ -29,7 +29,7 @@ import {
   useTrigger,
   StrictProps,
   deriveRenderOpts,
-  ensureGlobalVariants
+  ensureGlobalVariants,
 } from "@plasmicapp/react-web";
 import CardWall from "../../CardWall"; // plasmic-import: WfeXSi13l0/component
 import IconRow from "../../IconRow"; // plasmic-import: ODN3YJ6SGk/component
@@ -82,6 +82,7 @@ function PlasmicConsumptionIndexCard__RenderFunc(props: {
   forNode?: string;
 }) {
   const { variants, args, overrides, forNode } = props;
+  const $props = props.args;
 
   return (
     <CardWall
@@ -106,7 +107,7 @@ function PlasmicConsumptionIndexCard__RenderFunc(props: {
           {p.renderPlasmicSlot({
             defaultContents: "wc",
             value: args.consumptionPlace,
-            className: classNames(sty.slotTargetConsumptionPlace)
+            className: classNames(sty.slotTargetConsumptionPlace),
           })}
 
           <IconRow
@@ -137,7 +138,7 @@ function PlasmicConsumptionIndexCard__RenderFunc(props: {
                 </div>
               ),
 
-              value: args.consumptionIndex
+              value: args.consumptionIndex,
             })}
           </IconRow>
         </div>
@@ -155,7 +156,7 @@ const PlasmicDescendants = {
   freeBox: ["freeBox", "iconRow", "iconEntry"],
   iconRow: ["iconRow", "iconEntry"],
   iconEntry: ["iconEntry"],
-  indexInput: ["indexInput"]
+  indexInput: ["indexInput"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -202,14 +203,14 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       name: nodeName,
       descendantNames: [...PlasmicDescendants[nodeName]],
       internalArgPropNames: PlasmicConsumptionIndexCard__ArgProps,
-      internalVariantPropNames: PlasmicConsumptionIndexCard__VariantProps
+      internalVariantPropNames: PlasmicConsumptionIndexCard__VariantProps,
     });
 
     return PlasmicConsumptionIndexCard__RenderFunc({
       variants,
       args,
       overrides,
-      forNode: nodeName
+      forNode: nodeName,
     });
   };
   if (nodeName === "root") {
@@ -232,7 +233,7 @@ export const PlasmicConsumptionIndexCard = Object.assign(
 
     // Metadata about props expected for PlasmicConsumptionIndexCard
     internalVariantProps: PlasmicConsumptionIndexCard__VariantProps,
-    internalArgProps: PlasmicConsumptionIndexCard__ArgProps
+    internalArgProps: PlasmicConsumptionIndexCard__ArgProps,
   }
 );
 

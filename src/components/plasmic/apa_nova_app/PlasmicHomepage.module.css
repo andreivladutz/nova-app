@@ -45,7 +45,7 @@
 .text__sfLcu {
   text-align: left;
 }
-.issueDate:global(.__wab_instance) {
+.issueDateRow:global(.__wab_instance) {
   position: relative;
 }
 .calendarIcon {
@@ -59,7 +59,7 @@
   min-width: 0;
   min-height: 0;
 }
-.payment:global(.__wab_instance) {
+.paymentRow:global(.__wab_instance) {
   position: relative;
 }
 .cashIcon {
@@ -76,7 +76,7 @@
 .text__gIh4D {
   padding-right: 0px;
 }
-.payment2:global(.__wab_instance) {
+.totalConsumptionRow:global(.__wab_instance) {
   position: relative;
 }
 .cashIcon2 {
@@ -90,13 +90,15 @@
   min-width: 0;
   min-height: 0;
 }
-.text__qj5Yw {
+.freeBox {
   padding-right: 0px;
+  display: flex;
+  flex-direction: row;
 }
 .text__ctuW {
   padding-right: 0px;
 }
-.dueDate:global(.__wab_instance) {
+.dueDateRow:global(.__wab_instance) {
   position: relative;
 }
 .dueDateIcon {
@@ -114,7 +116,7 @@
   max-width: 100%;
   position: relative;
 }
-.svg___5NeDt {
+.svg__bPaJp {
   position: relative;
   object-fit: cover;
   width: 1em;

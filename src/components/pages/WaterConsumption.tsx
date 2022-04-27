@@ -4,10 +4,10 @@ import * as React from "react";
 import {
   PlasmicWaterConsumption,
   DefaultWaterConsumptionProps,
-} from "../components/plasmic/apa_nova_app/PlasmicWaterConsumption";
+} from "../plasmic/apa_nova_app/PlasmicWaterConsumption";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import { ROUTES } from "../utils/CONST";
-import useAppNavigation from "../hooks/useAppNavigation";
+import { ROUTES } from "../../utils/CONST";
+import useAppNavigation from "../../hooks/useAppNavigation";
 
 export interface WaterConsumptionProps extends DefaultWaterConsumptionProps {}
 

@@ -1,7 +1,10 @@
 export enum ErrorCode {
   GENERIC_ERROR = 0,
+  // The token has not matched any user
   USER_NOT_FOUND = 1,
+  // Missing qs param
   MISSING_PARAMETER = 2,
+  // Invalid qs param
   INVALID_PARAMETER = 3,
   BILL_NOT_FOUND = 4,
   MISSING_BODY = 5,

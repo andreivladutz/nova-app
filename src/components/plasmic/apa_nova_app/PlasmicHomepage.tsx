@@ -58,22 +58,34 @@ export type PlasmicHomepage__VariantsArgs = {};
 type VariantPropType = keyof PlasmicHomepage__VariantsArgs;
 export const PlasmicHomepage__VariantProps = new Array<VariantPropType>();
 
-export type PlasmicHomepage__ArgsType = {};
+export type PlasmicHomepage__ArgsType = {
+  emittedDate?: React.ReactNode;
+  total?: React.ReactNode;
+  waterConsumption?: React.ReactNode;
+  dueDate?: React.ReactNode;
+};
+
 type ArgPropType = keyof PlasmicHomepage__ArgsType;
-export const PlasmicHomepage__ArgProps = new Array<ArgPropType>();
+export const PlasmicHomepage__ArgProps = new Array<ArgPropType>(
+  "emittedDate",
+  "total",
+  "waterConsumption",
+  "dueDate"
+);
 
 export type PlasmicHomepage__OverridesType = {
   root?: p.Flex<"div">;
   page?: p.Flex<typeof Page>;
   title?: p.Flex<typeof Title>;
   cardWall?: p.Flex<typeof CardWall>;
-  issueDate?: p.Flex<typeof IconRow>;
+  issueDateRow?: p.Flex<typeof IconRow>;
   calendarIcon?: p.Flex<"svg">;
-  payment?: p.Flex<typeof IconRow>;
+  paymentRow?: p.Flex<typeof IconRow>;
   cashIcon?: p.Flex<"svg">;
-  payment2?: p.Flex<typeof IconRow>;
+  totalConsumptionRow?: p.Flex<typeof IconRow>;
   cashIcon2?: p.Flex<"svg">;
-  dueDate?: p.Flex<typeof IconRow>;
+  freeBox?: p.Flex<"div">;
+  dueDateRow?: p.Flex<typeof IconRow>;
   dueDateIcon?: p.Flex<"svg">;
   downloadBillBtn?: p.Flex<typeof SecondaryButton>;
   svg?: p.Flex<"svg">;
@@ -82,6 +94,10 @@ export type PlasmicHomepage__OverridesType = {
 };
 
 export interface DefaultHomepageProps {
+  emittedDate?: React.ReactNode;
+  total?: React.ReactNode;
+  waterConsumption?: React.ReactNode;
+  dueDate?: React.ReactNode;
   className?: string;
 }
 
@@ -93,6 +109,7 @@ function PlasmicHomepage__RenderFunc(props: {
   forNode?: string;
 }) {
   const { variants, args, overrides, forNode } = props;
+  const $props = props.args;
 
   return (
     <React.Fragment>
@@ -155,9 +172,9 @@ function PlasmicHomepage__RenderFunc(props: {
             cardContent={
               <React.Fragment>
                 <IconRow
-                  data-plasmic-name={"issueDate"}
-                  data-plasmic-override={overrides.issueDate}
-                  className={classNames("__wab_instance", sty.issueDate)}
+                  data-plasmic-name={"issueDateRow"}
+                  data-plasmic-override={overrides.issueDateRow}
+                  className={classNames("__wab_instance", sty.issueDateRow)}
                   iconEntry={
                     <DatesvgIcon
                       data-plasmic-name={"calendarIcon"}
@@ -169,13 +186,16 @@ function PlasmicHomepage__RenderFunc(props: {
                   staticText={"Data emitere: "}
                   visualVariations={["defaultColor"]}
                 >
-                  {"14.03.2022"}
+                  {p.renderPlasmicSlot({
+                    defaultContents: "14.03.2022",
+                    value: args.emittedDate
+                  })}
                 </IconRow>
 
                 <IconRow
-                  data-plasmic-name={"payment"}
-                  data-plasmic-override={overrides.payment}
-                  className={classNames("__wab_instance", sty.payment)}
+                  data-plasmic-name={"paymentRow"}
+                  data-plasmic-override={overrides.paymentRow}
+                  className={classNames("__wab_instance", sty.paymentRow)}
                   iconEntry={
                     <CashsvgIcon
                       data-plasmic-name={"cashIcon"}
@@ -197,13 +217,19 @@ function PlasmicHomepage__RenderFunc(props: {
                   }
                   visualVariations={["defaultColor"]}
                 >
-                  {"160 lei"}
+                  {p.renderPlasmicSlot({
+                    defaultContents: "160 lei",
+                    value: args.total
+                  })}
                 </IconRow>
 
                 <IconRow
-                  data-plasmic-name={"payment2"}
-                  data-plasmic-override={overrides.payment2}
-                  className={classNames("__wab_instance", sty.payment2)}
+                  data-plasmic-name={"totalConsumptionRow"}
+                  data-plasmic-override={overrides.totalConsumptionRow}
+                  className={classNames(
+                    "__wab_instance",
+                    sty.totalConsumptionRow
+                  )}
                   iconEntry={
                     <MetersvgIcon
                       data-plasmic-name={"cashIcon2"}
@@ -226,20 +252,21 @@ function PlasmicHomepage__RenderFunc(props: {
                   visualVariations={["defaultColor"]}
                 >
                   <div
-                    className={classNames(
-                      projectcss.all,
-                      projectcss.__wab_text,
-                      sty.text__qj5Yw
-                    )}
+                    data-plasmic-name={"freeBox"}
+                    data-plasmic-override={overrides.freeBox}
+                    className={classNames(projectcss.all, sty.freeBox)}
                   >
-                    {"91 m³"}
+                    {p.renderPlasmicSlot({
+                      defaultContents: "91 m³",
+                      value: args.waterConsumption
+                    })}
                   </div>
                 </IconRow>
 
                 <IconRow
-                  data-plasmic-name={"dueDate"}
-                  data-plasmic-override={overrides.dueDate}
-                  className={classNames("__wab_instance", sty.dueDate)}
+                  data-plasmic-name={"dueDateRow"}
+                  data-plasmic-override={overrides.dueDateRow}
+                  className={classNames("__wab_instance", sty.dueDateRow)}
                   iconEntry={
                     <CalendarChecksvgIcon
                       data-plasmic-name={"dueDateIcon"}
@@ -251,7 +278,10 @@ function PlasmicHomepage__RenderFunc(props: {
                   staticText={"Data scadentă: "}
                   visualVariations={["defaultColor"]}
                 >
-                  {"29.03.2022"}
+                  {p.renderPlasmicSlot({
+                    defaultContents: "29.03.2022",
+                    value: args.dueDate
+                  })}
                 </IconRow>
               </React.Fragment>
             }
@@ -302,13 +332,14 @@ const PlasmicDescendants = {
     "page",
     "title",
     "cardWall",
-    "issueDate",
+    "issueDateRow",
     "calendarIcon",
-    "payment",
+    "paymentRow",
     "cashIcon",
-    "payment2",
+    "totalConsumptionRow",
     "cashIcon2",
-    "dueDate",
+    "freeBox",
+    "dueDateRow",
     "dueDateIcon",
     "downloadBillBtn",
     "svg",
@@ -319,13 +350,14 @@ const PlasmicDescendants = {
     "page",
     "title",
     "cardWall",
-    "issueDate",
+    "issueDateRow",
     "calendarIcon",
-    "payment",
+    "paymentRow",
     "cashIcon",
-    "payment2",
+    "totalConsumptionRow",
     "cashIcon2",
-    "dueDate",
+    "freeBox",
+    "dueDateRow",
     "dueDateIcon",
     "downloadBillBtn",
     "svg",
@@ -335,24 +367,26 @@ const PlasmicDescendants = {
   title: ["title"],
   cardWall: [
     "cardWall",
-    "issueDate",
+    "issueDateRow",
     "calendarIcon",
-    "payment",
+    "paymentRow",
     "cashIcon",
-    "payment2",
+    "totalConsumptionRow",
     "cashIcon2",
-    "dueDate",
+    "freeBox",
+    "dueDateRow",
     "dueDateIcon",
     "downloadBillBtn",
     "svg"
   ],
-  issueDate: ["issueDate", "calendarIcon"],
+  issueDateRow: ["issueDateRow", "calendarIcon"],
   calendarIcon: ["calendarIcon"],
-  payment: ["payment", "cashIcon"],
+  paymentRow: ["paymentRow", "cashIcon"],
   cashIcon: ["cashIcon"],
-  payment2: ["payment2", "cashIcon2"],
+  totalConsumptionRow: ["totalConsumptionRow", "cashIcon2", "freeBox"],
   cashIcon2: ["cashIcon2"],
-  dueDate: ["dueDate", "dueDateIcon"],
+  freeBox: ["freeBox"],
+  dueDateRow: ["dueDateRow", "dueDateIcon"],
   dueDateIcon: ["dueDateIcon"],
   downloadBillBtn: ["downloadBillBtn", "svg"],
   svg: ["svg"],
@@ -367,13 +401,14 @@ type NodeDefaultElementType = {
   page: typeof Page;
   title: typeof Title;
   cardWall: typeof CardWall;
-  issueDate: typeof IconRow;
+  issueDateRow: typeof IconRow;
   calendarIcon: "svg";
-  payment: typeof IconRow;
+  paymentRow: typeof IconRow;
   cashIcon: "svg";
-  payment2: typeof IconRow;
+  totalConsumptionRow: typeof IconRow;
   cashIcon2: "svg";
-  dueDate: typeof IconRow;
+  freeBox: "div";
+  dueDateRow: typeof IconRow;
   dueDateIcon: "svg";
   downloadBillBtn: typeof SecondaryButton;
   svg: "svg";
@@ -441,13 +476,14 @@ export const PlasmicHomepage = Object.assign(
     page: makeNodeComponent("page"),
     title: makeNodeComponent("title"),
     cardWall: makeNodeComponent("cardWall"),
-    issueDate: makeNodeComponent("issueDate"),
+    issueDateRow: makeNodeComponent("issueDateRow"),
     calendarIcon: makeNodeComponent("calendarIcon"),
-    payment: makeNodeComponent("payment"),
+    paymentRow: makeNodeComponent("paymentRow"),
     cashIcon: makeNodeComponent("cashIcon"),
-    payment2: makeNodeComponent("payment2"),
+    totalConsumptionRow: makeNodeComponent("totalConsumptionRow"),
     cashIcon2: makeNodeComponent("cashIcon2"),
-    dueDate: makeNodeComponent("dueDate"),
+    freeBox: makeNodeComponent("freeBox"),
+    dueDateRow: makeNodeComponent("dueDateRow"),
     dueDateIcon: makeNodeComponent("dueDateIcon"),
     downloadBillBtn: makeNodeComponent("downloadBillBtn"),
     svg: makeNodeComponent("svg"),

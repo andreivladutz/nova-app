@@ -35,7 +35,7 @@
           "projectId": "greMf1VEQkt4MFPhQZJ1ua",
           "renderModuleFilePath": "plasmic/apa_nova_app/PlasmicHomepage.tsx",
           "importSpec": {
-            "modulePath": "Homepage.tsx"
+            "modulePath": "pages/Homepage.tsx"
           },
           "cssFilePath": "plasmic/apa_nova_app/PlasmicHomepage.module.css",
           "scheme": "blackbox",
@@ -101,7 +101,7 @@
           "projectId": "greMf1VEQkt4MFPhQZJ1ua",
           "renderModuleFilePath": "plasmic/apa_nova_app/PlasmicWaterConsumption.tsx",
           "importSpec": {
-            "modulePath": "WaterConsumption.tsx"
+            "modulePath": "pages/WaterConsumption.tsx"
           },
           "cssFilePath": "plasmic/apa_nova_app/PlasmicWaterConsumption.module.css",
           "scheme": "blackbox",
@@ -251,6 +251,6 @@
     ]
   },
   "wrapPagesWithGlobalContexts": true,
-  "cliVersion": "0.1.175",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.175/dist/plasmic.schema.json"
+  "cliVersion": "0.1.178",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.178/dist/plasmic.schema.json"
 }

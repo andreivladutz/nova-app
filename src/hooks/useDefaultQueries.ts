@@ -1,14 +1,22 @@
 import { useQuery } from "react-query";
-import { User } from "../shared";
+import { Bill, User } from "../shared";
 import { HttpClientError } from "../apiConsumer/client";
-import { getUser } from "../apiConsumer/queries";
+import { getLatestBill, getUser } from "../apiConsumer/queries";
+import { QUERY_KEYS } from "../utils/CONST";
 
 const useDefaultQueries = (userToken: string) => {
-  const userQuery = useQuery<User, HttpClientError>("user", () =>
+  const user = useQuery<User, HttpClientError>(QUERY_KEYS.USER, () =>
     getUser(userToken)
   );
 
-  console.log(userQuery);
+  const latestBill = useQuery<Bill, HttpClientError>(QUERY_KEYS.BILL, () =>
+    getLatestBill()
+  );
+
+  return {
+    user,
+    latestBill,
+  };
 };
 
 export default useDefaultQueries;
