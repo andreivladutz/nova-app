@@ -18,6 +18,7 @@ import notionCreds from "../utils/notionCreds";
 import { getConsumption } from "./getConsumption";
 import { toIsoString } from "../utils/notionUtils/toIsoString";
 import { getLatestBill } from "./getLatestBill";
+import getPreviousConsumption from "../utils/notionAccess/getPreviousConsumption";
 
 const updateConsumption = async (updateBody: UpdateConsumptionBody) => {
   const dbWrapper = createDbWrapper<Consumption>(
@@ -45,17 +46,6 @@ const updateConsumption = async (updateBody: UpdateConsumptionBody) => {
 
   const { indexBathroom, indexWC, indexKitchen } = updateBody;
 
-  // FIRST, verify if the entered idx is valid,
-  // i.e. it is not lower than the previously
-  // entered consumption index
-  if (
-    indexBathroom < consumptionObj.indexBathroom ||
-    indexWC < consumptionObj.indexWC ||
-    indexKitchen < consumptionObj.indexKitchen
-  ) {
-    return ErrorCode.CONSUMPTION_INDEX_IS_LOWER;
-  }
-
   const latestBill = await getLatestBill();
 
   if (!latestBill) {
@@ -72,13 +62,22 @@ const updateConsumption = async (updateBody: UpdateConsumptionBody) => {
     return ErrorCode.NOT_LATEST_BILL_CONSUMPTION;
   }
 
+  const previousConsumption = await getPreviousConsumption(billId, userToken);
+
+  const deltaBathroom = indexBathroom - previousConsumption.indexBathroom;
+  const deltaKitchen = indexKitchen - previousConsumption.indexKitchen;
+  const deltaWC = indexWC - previousConsumption.indexWC;
+
+  // Verify if the entered idx is valid,
+  // i.e. it is not lower than the previously
+  // entered consumption index
+  if (deltaBathroom < 0 || deltaKitchen < 0 || deltaWC < 0) {
+    return ErrorCode.CONSUMPTION_INDEX_IS_LOWER;
+  }
+
   const { total, waterConsumption } = latestBill;
   const pricePerCubeM = total / waterConsumption;
-  const consumptionCubeM =
-    indexBathroom -
-    consumptionObj.indexBathroom +
-    (indexKitchen - consumptionObj.indexKitchen) +
-    (indexWC - consumptionObj.indexWC);
+  const consumptionCubeM = deltaBathroom + deltaKitchen + deltaWC;
 
   consumptionObj.indexBathroom = indexBathroom;
   consumptionObj.indexWC = indexWC;

@@ -14,6 +14,7 @@ import {
 import { toIsoString } from "../utils/notionUtils/toIsoString";
 import { getUser, userNotFoundErr } from "./getUser";
 import { ConsumptionResponse } from "../utils/sharedDomain";
+import getPreviousConsumption from "../utils/notionAccess/getPreviousConsumption";
 
 export async function getConsumption(
   billId: number,
@@ -53,15 +54,20 @@ export async function getConsumption(
     return null;
   }
 
-  // Warning: A user with a token can create an infinite number
+  const prevConsumption = await getPreviousConsumption(billId, userToken);
+  const {
+    indexWC = 0,
+    indexBathroom = 0,
+    indexKitchen = 0,
+  } = prevConsumption || {};
+
+  // TODO: A user with a token can create an infinite number
   // of consumptions by generating random bill ids
   return dbWrapper.create({
     name: `Ap-${user.apartmentNo}-bill-${billId}`,
-    // TODO: The index values should be the ones prior to this consumption
-    // i.e. the consumption belonging to this user and latest date
-    indexWC: 0,
-    indexBathroom: 0,
-    indexKitchen: 0,
+    indexWC,
+    indexBathroom,
+    indexKitchen,
     date: toIsoString(new Date()),
     confirmed: false,
     total: 0,
