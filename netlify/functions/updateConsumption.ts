@@ -19,6 +19,7 @@ import { getConsumption } from "./getConsumption";
 import { toIsoString } from "../utils/notionUtils/toIsoString";
 import { getLatestBill } from "./getLatestBill";
 import getPreviousConsumption from "../utils/notionAccess/getPreviousConsumption";
+import { NotionAcessPrototype } from "../utils/notionUtils/notionPage";
 
 const updateConsumption = async (updateBody: UpdateConsumptionBody) => {
   const dbWrapper = createDbWrapper<Consumption>(
@@ -30,7 +31,9 @@ const updateConsumption = async (updateBody: UpdateConsumptionBody) => {
 
   // The getting of the consumption might fail if the user is not found
   // or if the consumption itself is not found (we do not create one instead)
-  const consumptionObj = await getConsumption(billId, userToken, false);
+  const consumptionObj = (await getConsumption(billId, userToken, false)) as
+    | (Consumption & NotionAcessPrototype)
+    | null;
   if (!consumptionObj) {
     return null;
   }
@@ -100,7 +103,7 @@ const updateConsumption = async (updateBody: UpdateConsumptionBody) => {
   return updatedConsumption;
 };
 
-const updateConsumptionErr = (code: ErrorCode): [string, ErrorCode] => {
+export const updateConsumptionErr = (code: ErrorCode): [string, ErrorCode] => {
   switch (code) {
     case ErrorCode.UPDATE_CONSUMPTION_FAILED:
       return ["Could not update the consumption", code];

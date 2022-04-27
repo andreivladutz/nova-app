@@ -3,8 +3,10 @@ import notionCreds from "../utils/notionCreds";
 
 import { createDbWrapper } from "../utils/notionApiWrappers";
 import { filter } from "../utils/notionUtils/filter";
-import { Consumption, consumptionKeys } from "../utils/sharedDomain";
+import { Consumption, consumptionKeys, ErrorCode } from "../utils/sharedDomain";
 import {
+  apiErrors,
+  handlerError,
   notionCallWithErrHandling,
   onSuccess,
   QsParamsType,
@@ -15,6 +17,8 @@ import { toIsoString } from "../utils/notionUtils/toIsoString";
 import { getUser, userNotFoundErr } from "./getUser";
 import { ConsumptionResponse } from "../utils/sharedDomain";
 import getPreviousConsumption from "../utils/notionAccess/getPreviousConsumption";
+import { getLatestBill } from "./getLatestBill";
+import { updateConsumptionErr } from "./updateConsumption";
 
 export async function getConsumption(
   billId: number,
@@ -54,6 +58,25 @@ export async function getConsumption(
     return null;
   }
 
+  // Make sure a consumption is always created for the latest bill
+  const latestBill = await getLatestBill();
+
+  if (!latestBill) {
+    console.log(`We could not fetch the latest bill with billId = ${billId}`);
+    return null;
+  }
+
+  if (latestBill.billId !== billId) {
+    console.log(
+      "The user is trying to create a consumption for an earlier bill"
+    );
+    console.log(
+      `Latest billId = ${latestBill.billId} and the user billId = ${billId}`
+    );
+
+    return ErrorCode.NOT_LATEST_BILL_CONSUMPTION;
+  }
+
   const prevConsumption = await getPreviousConsumption(billId, userToken);
   const {
     indexWC = 0,
@@ -61,8 +84,6 @@ export async function getConsumption(
     indexKitchen = 0,
   } = prevConsumption || {};
 
-  // TODO: A user with a token can create an infinite number
-  // of consumptions by generating random bill ids
   return dbWrapper.create({
     name: `Ap-${user.apartmentNo}-bill-${billId}`,
     indexWC,
@@ -99,6 +120,15 @@ const handler: Handler = (event) =>
     )
     .then(
       onSuccess(async (consumption) => {
+        // The user is trying to create a consumption for an earlier bill
+        if (typeof consumption === "number") {
+          return handlerError(
+            apiErrors.badRequest(
+              // an ErrorCode has beeen returned by the update fn
+              ...updateConsumptionErr(consumption)
+            )
+          );
+        }
         // The only time we won't be able to get the consumption
         // is when we actually cannot get the user
         // (otherwise a consumption wil be created)
