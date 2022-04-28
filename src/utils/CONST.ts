@@ -13,6 +13,7 @@ export const QS_PARAMS = {
 export const QUERY_KEYS = {
   USER: "user",
   BILL: "latestBill",
+  CONSUMPTION: "consumption",
 };
 
 // Mapping api ErrorCode(s) to client side errors
@@ -36,7 +37,11 @@ export const ERRORS_LOCALIZED = {
 
 export const STYLING = {
   SKELETONS: {
-    BASE_COLOR: "#A4ABB0",
+    BASE_COLOR: "var(--plasmic-token-base-color)",
     HIGHLIGHT_COLOR: "#bbc4c9",
+  },
+  SKELETON_PRIMARY_COLOR: {
+    baseColor: "var(--plasmic-token-bg-color)",
+    highlightColor: "var(--plasmic-token-primary-color)",
   },
 };

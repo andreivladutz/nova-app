@@ -12,9 +12,31 @@ import useDefaultQueries from "../../hooks/useDefaultQueries";
 import { useAppCtx } from "../../contexts/AppCtxProvider";
 
 import downloadFile from "../../utils/downloadFile";
-import { ROUTES } from "../../utils/CONST";
+import { ROUTES, STYLING } from "../../utils/CONST";
 import ButtonSkeleton from "../proprietary/skeletons/ButtonSkeleton";
-import SkeletonLoader from "../proprietary/skeletons/SkeletonLoader";
+import SkeletonLoader, {
+  SkeletonLoaderProps,
+} from "../proprietary/skeletons/SkeletonLoader";
+
+const { SKELETON_PRIMARY_COLOR } = STYLING;
+
+export const makeButtonLoader =
+  (isLoading: boolean) =>
+  (
+    onClick: () => void,
+    skeletonContainerStyle?: React.CSSProperties,
+    skeletonProps?: SkeletonLoaderProps
+  ) => ({
+    // @ts-expect-error
+    render: (props, Component) =>
+      isLoading ? (
+        <div style={{ width: "100%", ...skeletonContainerStyle }}>
+          <ButtonSkeleton {...skeletonProps} />
+        </div>
+      ) : (
+        <Component {...props} onClick={onClick} />
+      ),
+  });
 
 export interface HomepageProps extends DefaultHomepageProps {}
 
@@ -22,8 +44,10 @@ function Homepage_(props: HomepageProps, ref: HTMLElementRefOf<"div">) {
   const { navigate } = useAppNavigation();
   const { userToken } = useAppCtx();
   const {
-    latestBill: { data, isLoading },
-  } = useDefaultQueries(userToken || "");
+    latestBill: { data, isSuccess },
+  } = useDefaultQueries(userToken);
+
+  const isLoading = !isSuccess;
 
   const componentLoader = {
     // @ts-expect-error
@@ -35,20 +59,7 @@ function Homepage_(props: HomepageProps, ref: HTMLElementRefOf<"div">) {
       ),
   };
 
-  const buttonLoader = (
-    onClick: () => void,
-    skeletonContainerStyle?: React.CSSProperties
-  ) => ({
-    // @ts-expect-error
-    render: (props, Component) =>
-      isLoading ? (
-        <div style={{ width: "100%", ...skeletonContainerStyle }}>
-          <ButtonSkeleton />
-        </div>
-      ) : (
-        <Component {...props} onClick={onClick} />
-      ),
-  });
+  const buttonLoader = makeButtonLoader(isLoading);
 
   return (
     <PlasmicHomepage
@@ -65,9 +76,13 @@ function Homepage_(props: HomepageProps, ref: HTMLElementRefOf<"div">) {
       downloadBillBtn={buttonLoader(() =>
         downloadFile(data!.file, "factura-apanova")
       )}
-      enterIdxBtn={buttonLoader(() => navigate(ROUTES.WATER_CONSUMPTION), {
-        marginTop: "-2rem",
-      })}
+      enterIdxBtn={buttonLoader(
+        () => navigate(ROUTES.WATER_CONSUMPTION),
+        {
+          marginTop: "-2rem",
+        },
+        SKELETON_PRIMARY_COLOR
+      )}
     />
   );
 }

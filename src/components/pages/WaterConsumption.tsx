@@ -6,9 +6,18 @@ import {
   DefaultWaterConsumptionProps,
 } from "../plasmic/apa_nova_app/PlasmicWaterConsumption";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import { ROUTES } from "../../utils/CONST";
+import { ROUTES, STYLING } from "../../utils/CONST";
 import useAppNavigation from "../../hooks/useAppNavigation";
 import { IndexInput } from "../proprietary/IndexInput";
+import useDefaultQueries from "../../hooks/useDefaultQueries";
+import SkeletonLoader, {
+  SkeletonLoaderProps,
+} from "../proprietary/skeletons/SkeletonLoader";
+import { useAppCtx } from "../../contexts/AppCtxProvider";
+import ConsumptionIndexCard from "../ConsumptionIndexCard";
+import { makeButtonLoader } from "./Homepage";
+
+const { SKELETON_PRIMARY_COLOR } = STYLING;
 
 export interface WaterConsumptionProps extends DefaultWaterConsumptionProps {}
 
@@ -17,19 +26,56 @@ function WaterConsumption_(
   ref: HTMLElementRefOf<"div">
 ) {
   const { goBackTo } = useAppNavigation();
+  const { userToken } = useAppCtx();
+  const { consumption, user, latestBill } = useDefaultQueries(userToken);
+
+  const isLoading = !consumption.isSuccess || !user.isSuccess;
+  const buttonLoader = makeButtonLoader(isLoading);
+  const componentLoader = (
+    key: string,
+    skeletonProps: SkeletonLoaderProps,
+    children?: React.ReactNode
+  ) => ({
+    // @ts-expect-error
+    render: (props, Component) =>
+      isLoading ? (
+        <SkeletonLoader key={`${key}-skeleton`} {...skeletonProps} />
+      ) : (
+        <Component
+          key={`${key}-component`}
+          {...props}
+          children={children ? children : props.children}
+        />
+      ),
+  });
+
+  const { apartmentNo } = user.data || {};
+  const {
+    total,
+    prevIndexWC,
+    prevIndexBathroom,
+    prevIndexKitchen,
+    indexWC,
+    indexBathroom,
+    indexKitchen,
+  } = consumption.data || {};
+  const { total: totalBill, waterConsumption } = latestBill.data || {};
+  const pricePerCubeM = ((totalBill || 1) / (waterConsumption || 1)).toFixed(2);
+
+  // TODO: Add state for each IndexInput
 
   const consumptionValues = [
     {
       name: "WC",
-      oldIndex: "1234",
+      oldIndex: prevIndexWC,
     },
     {
       name: "Baie",
-      oldIndex: "4567",
+      oldIndex: prevIndexBathroom,
     },
     {
       name: "Bucătărie",
-      oldIndex: "7890",
+      oldIndex: prevIndexKitchen,
     },
   ] as const;
 
@@ -43,21 +89,43 @@ function WaterConsumption_(
         },
       }}
       consumptionIndexCard={{
-        render: (props, ConsumptionIdxCard) =>
+        render: () =>
           consumptionValues.map(({ name, oldIndex }, elIdx) => (
-            <ConsumptionIdxCard
-              {...props}
-              key={elIdx}
+            <ConsumptionIndexCard
+              key={`consumption-card-${elIdx}`}
+              isLoading={isLoading}
               consumptionPlace={name}
-              consumptionIndex={oldIndex}
-              digitsInput={<IndexInput />}
+              consumptionIndex={` ${oldIndex}`}
+              digitsInput={<IndexInput key={`digitsInput-${elIdx}`} />}
             />
           )),
       }}
-      apartmentNumber={"11"}
-      totalText={"10.000 LEI"}
-      waterConsumption={"2000 MC"}
-      priceBreakdown={"7.4 = 74 / 10"}
+      title={componentLoader(
+        "title",
+        {
+          containerStyle: {
+            width: "50vw",
+          },
+          height: "var(--plasmic-token-title)",
+
+          ...SKELETON_PRIMARY_COLOR,
+        },
+        <div>{`Apartament ${apartmentNo}`}</div>
+      )}
+      enterIdxBtn={buttonLoader(
+        () => {
+          console.log("SABING");
+        },
+        {},
+        SKELETON_PRIMARY_COLOR
+      )}
+      totalText={`${total} LEI`}
+      waterConsumption={"2000 m³"}
+      priceBreakdown={`${pricePerCubeM} lei / m³ = ${totalBill} lei / ${waterConsumption} m³`}
+      totalBreakdown={{
+        // TODO: Smarter hiding of the total breakdown
+        render: (props, Component) => !isLoading && <Component {...props} />,
+      }}
     />
   );
 }
