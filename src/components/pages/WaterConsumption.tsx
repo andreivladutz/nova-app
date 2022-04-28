@@ -8,6 +8,7 @@ import {
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
 import { ROUTES } from "../../utils/CONST";
 import useAppNavigation from "../../hooks/useAppNavigation";
+import { IndexInput } from "../proprietary/IndexInput";
 
 export interface WaterConsumptionProps extends DefaultWaterConsumptionProps {}
 
@@ -16,6 +17,21 @@ function WaterConsumption_(
   ref: HTMLElementRefOf<"div">
 ) {
   const { goBackTo } = useAppNavigation();
+
+  const consumptionValues = [
+    {
+      name: "WC",
+      oldIndex: "1234",
+    },
+    {
+      name: "Baie",
+      oldIndex: "4567",
+    },
+    {
+      name: "Bucătărie",
+      oldIndex: "7890",
+    },
+  ] as const;
 
   return (
     <PlasmicWaterConsumption
@@ -26,6 +42,22 @@ function WaterConsumption_(
           goBackTo(ROUTES.HOMEPAGE);
         },
       }}
+      consumptionIndexCard={{
+        render: (props, ConsumptionIdxCard) =>
+          consumptionValues.map(({ name, oldIndex }, elIdx) => (
+            <ConsumptionIdxCard
+              {...props}
+              key={elIdx}
+              consumptionPlace={name}
+              consumptionIndex={oldIndex}
+              digitsInput={<IndexInput />}
+            />
+          )),
+      }}
+      apartmentNumber={"11"}
+      totalText={"10.000 LEI"}
+      waterConsumption={"2000 MC"}
+      priceBreakdown={"7.4 = 74 / 10"}
     />
   );
 }

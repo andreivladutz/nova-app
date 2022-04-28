@@ -52,12 +52,14 @@ export const PlasmicConsumptionIndexCard__VariantProps =
 export type PlasmicConsumptionIndexCard__ArgsType = {
   consumptionPlace?: React.ReactNode;
   consumptionIndex?: React.ReactNode;
+  digitsInput?: React.ReactNode;
 };
 
 type ArgPropType = keyof PlasmicConsumptionIndexCard__ArgsType;
 export const PlasmicConsumptionIndexCard__ArgProps = new Array<ArgPropType>(
   "consumptionPlace",
-  "consumptionIndex"
+  "consumptionIndex",
+  "digitsInput"
 );
 
 export type PlasmicConsumptionIndexCard__OverridesType = {
@@ -65,12 +67,12 @@ export type PlasmicConsumptionIndexCard__OverridesType = {
   freeBox?: p.Flex<"div">;
   iconRow?: p.Flex<typeof IconRow>;
   iconEntry?: p.Flex<"svg">;
-  indexInput?: p.Flex<typeof IndexInput>;
 };
 
 export interface DefaultConsumptionIndexCardProps {
   consumptionPlace?: React.ReactNode;
   consumptionIndex?: React.ReactNode;
+  digitsInput?: React.ReactNode;
   className?: string;
 }
 
@@ -90,13 +92,15 @@ function PlasmicConsumptionIndexCard__RenderFunc(props: {
       data-plasmic-override={overrides.root}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
-      cardContent={
-        <IndexInput
-          data-plasmic-name={"indexInput"}
-          data-plasmic-override={overrides.indexInput}
-          className={classNames("__wab_instance", sty.indexInput)}
-        />
-      }
+      cardContent={p.renderPlasmicSlot({
+        defaultContents: (
+          <IndexInput
+            className={classNames("__wab_instance", sty.indexInput__iepao)}
+          />
+        ),
+
+        value: args.digitsInput,
+      })}
       cardCta={null}
       cardTitle={
         <div
@@ -152,11 +156,10 @@ function PlasmicConsumptionIndexCard__RenderFunc(props: {
 }
 
 const PlasmicDescendants = {
-  root: ["root", "freeBox", "iconRow", "iconEntry", "indexInput"],
+  root: ["root", "freeBox", "iconRow", "iconEntry"],
   freeBox: ["freeBox", "iconRow", "iconEntry"],
   iconRow: ["iconRow", "iconEntry"],
   iconEntry: ["iconEntry"],
-  indexInput: ["indexInput"],
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -166,7 +169,6 @@ type NodeDefaultElementType = {
   freeBox: "div";
   iconRow: typeof IconRow;
   iconEntry: "svg";
-  indexInput: typeof IndexInput;
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -229,7 +231,6 @@ export const PlasmicConsumptionIndexCard = Object.assign(
     freeBox: makeNodeComponent("freeBox"),
     iconRow: makeNodeComponent("iconRow"),
     iconEntry: makeNodeComponent("iconEntry"),
-    indexInput: makeNodeComponent("indexInput"),
 
     // Metadata about props expected for PlasmicConsumptionIndexCard
     internalVariantProps: PlasmicConsumptionIndexCard__VariantProps,

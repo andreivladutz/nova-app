@@ -34,6 +34,7 @@ import {
 import Page from "../../Page"; // plasmic-import: ObT6vFZq55k/component
 import Title from "../../Title"; // plasmic-import: HmqbxqWFFW/component
 import ConsumptionIndexCard from "../../ConsumptionIndexCard"; // plasmic-import: yRFP5-EEfg/component
+import { IndexInput } from "../../../../components/proprietary/IndexInput"; // plasmic-import: ZdBlEIWyCZ/codeComponent
 import Button from "../../Button"; // plasmic-import: JGQhBxRoWTE/component
 import CardWall from "../../CardWall"; // plasmic-import: WfeXSi13l0/component
 import IconRow from "../../IconRow"; // plasmic-import: ODN3YJ6SGk/component
@@ -57,23 +58,37 @@ type VariantPropType = keyof PlasmicWaterConsumption__VariantsArgs;
 export const PlasmicWaterConsumption__VariantProps =
   new Array<VariantPropType>();
 
-export type PlasmicWaterConsumption__ArgsType = {};
+export type PlasmicWaterConsumption__ArgsType = {
+  apartmentNumber?: React.ReactNode;
+  totalText?: React.ReactNode;
+  waterConsumption?: React.ReactNode;
+  priceBreakdown?: React.ReactNode;
+};
+
 type ArgPropType = keyof PlasmicWaterConsumption__ArgsType;
-export const PlasmicWaterConsumption__ArgProps = new Array<ArgPropType>();
+export const PlasmicWaterConsumption__ArgProps = new Array<ArgPropType>(
+  "apartmentNumber",
+  "totalText",
+  "waterConsumption",
+  "priceBreakdown"
+);
 
 export type PlasmicWaterConsumption__OverridesType = {
   root?: p.Flex<"div">;
   backButton?: p.Flex<"div">;
   page?: p.Flex<typeof Page>;
   title?: p.Flex<typeof Title>;
+  text?: p.Flex<"div">;
   consumptionIndexCard?: p.Flex<typeof ConsumptionIndexCard>;
   enterIdxBtn?: p.Flex<typeof Button>;
-  cardWall?: p.Flex<typeof CardWall>;
-  freeBox?: p.Flex<"div">;
-  text?: p.Flex<"div">;
+  totalBreakdown?: p.Flex<typeof CardWall>;
 };
 
 export interface DefaultWaterConsumptionProps {
+  apartmentNumber?: React.ReactNode;
+  totalText?: React.ReactNode;
+  waterConsumption?: React.ReactNode;
+  priceBreakdown?: React.ReactNode;
   className?: string;
 }
 
@@ -92,159 +107,193 @@ function PlasmicWaterConsumption__RenderFunc(props: {
       {}
       {}
 
-      <div
-        data-plasmic-name={"root"}
-        data-plasmic-override={overrides.root}
-        data-plasmic-root={true}
-        data-plasmic-for-node={forNode}
-        className={classNames(
-          projectcss.all,
-          projectcss.root_reset,
-          projectcss.plasmic_default_styles,
-          projectcss.plasmic_mixins,
-          projectcss.plasmic_tokens,
-          sty.root
-        )}
-      >
+      <div className={projectcss.plasmic_page_wrapper}>
         <div
-          data-plasmic-name={"backButton"}
-          data-plasmic-override={overrides.backButton}
-          className={classNames(projectcss.all, sty.backButton)}
+          data-plasmic-name={"root"}
+          data-plasmic-override={overrides.root}
+          data-plasmic-root={true}
+          data-plasmic-for-node={forNode}
+          className={classNames(
+            projectcss.all,
+            projectcss.root_reset,
+            projectcss.plasmic_default_styles,
+            projectcss.plasmic_mixins,
+            projectcss.plasmic_tokens,
+            sty.root
+          )}
         >
-          {true ? (
-            <LeftArrowSimplesvgIcon
-              className={classNames(projectcss.all, sty.svg__eXlSd)}
-              role={"img"}
+          <div
+            data-plasmic-name={"backButton"}
+            data-plasmic-override={overrides.backButton}
+            className={classNames(projectcss.all, sty.backButton)}
+          >
+            {true ? (
+              <LeftArrowSimplesvgIcon
+                className={classNames(projectcss.all, sty.svg__eXlSd)}
+                role={"img"}
+              />
+            ) : null}
+          </div>
+
+          <Page
+            data-plasmic-name={"page"}
+            data-plasmic-override={overrides.page}
+            className={classNames("__wab_instance", sty.page)}
+            cta={
+              <Button
+                data-plasmic-name={"enterIdxBtn"}
+                data-plasmic-override={overrides.enterIdxBtn}
+                btnType={"primary" as const}
+                className={classNames("__wab_instance", sty.enterIdxBtn)}
+                endIcon={
+                  true ? (
+                    <IconIcon
+                      className={classNames(projectcss.all, sty.svg___1Sy2O)}
+                      role={"img"}
+                    />
+                  ) : null
+                }
+                shape={"rounded" as const}
+              >
+                {"Salvează"}
+              </Button>
+            }
+            footer={
+              <CardWall
+                data-plasmic-name={"totalBreakdown"}
+                data-plasmic-override={overrides.totalBreakdown}
+                cardContent={
+                  true ? (
+                    <div
+                      className={classNames(projectcss.all, sty.freeBox__jStO)}
+                    >
+                      <IconRow
+                        className={classNames(
+                          "__wab_instance",
+                          sty.iconRow__e4GHe
+                        )}
+                        iconEntry={
+                          <CashsvgIcon
+                            className={classNames(
+                              projectcss.all,
+                              sty.svg__kz8Uw
+                            )}
+                            role={"img"}
+                          />
+                        }
+                        staticText={"Total de plată"}
+                        visualVariations={[
+                          "large",
+                          "primaryDynamicText",
+                          "defaultColor"
+                        ]}
+                      >
+                        {true ? (
+                          <div
+                            className={classNames(
+                              projectcss.all,
+                              sty.freeBox__zOp7R
+                            )}
+                          >
+                            {p.renderPlasmicSlot({
+                              defaultContents: "50.00 lei",
+                              value: args.totalText,
+                              className: classNames(sty.slotTargetTotalText)
+                            })}
+                          </div>
+                        ) : null}
+                      </IconRow>
+
+                      <IconRow
+                        className={classNames(
+                          "__wab_instance",
+                          sty.iconRow__zeEqW
+                        )}
+                        iconEntry={
+                          <MetersvgIcon
+                            className={classNames(
+                              projectcss.all,
+                              sty.svg__iOsfm
+                            )}
+                            role={"img"}
+                          />
+                        }
+                        staticText={"Consum total "}
+                        visualVariations={["defaultColor"]}
+                      >
+                        {p.renderPlasmicSlot({
+                          defaultContents: "3 m³",
+                          value: args.waterConsumption
+                        })}
+                      </IconRow>
+
+                      <IconRow
+                        className={classNames(
+                          "__wab_instance",
+                          sty.iconRow__gtKxf
+                        )}
+                        iconEntry={
+                          <CashsvgIcon
+                            className={classNames(
+                              projectcss.all,
+                              sty.svg__mQsQj
+                            )}
+                            role={"img"}
+                          />
+                        }
+                        staticText={"Componență preț "}
+                        visualVariations={[
+                          "defaultColor",
+                          "newlineDynamicText"
+                        ]}
+                      >
+                        {p.renderPlasmicSlot({
+                          defaultContents: "7.4 lei / m³= 280 lei / 91 m³",
+                          value: args.priceBreakdown
+                        })}
+                      </IconRow>
+                    </div>
+                  ) : null
+                }
+                cardType={"contentOnly" as const}
+                className={classNames("__wab_instance", sty.totalBreakdown)}
+                decorations={["secondaryCard"]}
+              />
+            }
+            title={
+              <Title
+                data-plasmic-name={"title"}
+                data-plasmic-override={overrides.title}
+                className={classNames("__wab_instance", sty.title)}
+              >
+                <div
+                  data-plasmic-name={"text"}
+                  data-plasmic-override={overrides.text}
+                  className={classNames(
+                    projectcss.all,
+                    projectcss.__wab_text,
+                    sty.text
+                  )}
+                >
+                  {"Apartament \n"}
+                </div>
+
+                {p.renderPlasmicSlot({
+                  defaultContents: "0",
+                  value: args.apartmentNumber
+                })}
+              </Title>
+            }
+            withFooter={true}
+          >
+            <ConsumptionIndexCard
+              data-plasmic-name={"consumptionIndexCard"}
+              data-plasmic-override={overrides.consumptionIndexCard}
+              className={classNames("__wab_instance", sty.consumptionIndexCard)}
+              consumptionPlace={"WC"}
             />
-          ) : null}
+          </Page>
         </div>
-
-        <Page
-          data-plasmic-name={"page"}
-          data-plasmic-override={overrides.page}
-          className={classNames("__wab_instance", sty.page)}
-          cta={
-            <Button
-              data-plasmic-name={"enterIdxBtn"}
-              data-plasmic-override={overrides.enterIdxBtn}
-              btnType={"primary" as const}
-              className={classNames("__wab_instance", sty.enterIdxBtn)}
-              endIcon={
-                true ? (
-                  <IconIcon
-                    className={classNames(projectcss.all, sty.svg___1Sy2O)}
-                    role={"img"}
-                  />
-                ) : null
-              }
-              shape={"rounded" as const}
-            >
-              {"Salvează"}
-            </Button>
-          }
-          footer={
-            <CardWall
-              data-plasmic-name={"cardWall"}
-              data-plasmic-override={overrides.cardWall}
-              cardContent={
-                true ? (
-                  <div
-                    data-plasmic-name={"freeBox"}
-                    data-plasmic-override={overrides.freeBox}
-                    className={classNames(projectcss.all, sty.freeBox)}
-                  >
-                    <IconRow
-                      className={classNames(
-                        "__wab_instance",
-                        sty.iconRow__e4GHe
-                      )}
-                      iconEntry={
-                        <CashsvgIcon
-                          className={classNames(projectcss.all, sty.svg__kz8Uw)}
-                          role={"img"}
-                        />
-                      }
-                      staticText={"Total de plată"}
-                      visualVariations={[
-                        "large",
-                        "primaryDynamicText",
-                        "defaultColor"
-                      ]}
-                    >
-                      {true ? (
-                        <div
-                          data-plasmic-name={"text"}
-                          data-plasmic-override={overrides.text}
-                          className={classNames(
-                            projectcss.all,
-                            projectcss.__wab_text,
-                            sty.text
-                          )}
-                        >
-                          {"50.00 lei"}
-                        </div>
-                      ) : null}
-                    </IconRow>
-
-                    <IconRow
-                      className={classNames(
-                        "__wab_instance",
-                        sty.iconRow__zeEqW
-                      )}
-                      iconEntry={
-                        <MetersvgIcon
-                          className={classNames(projectcss.all, sty.svg__iOsfm)}
-                          role={"img"}
-                        />
-                      }
-                      staticText={"Consum total "}
-                      visualVariations={["defaultColor"]}
-                    >
-                      {"3 m³"}
-                    </IconRow>
-
-                    <IconRow
-                      className={classNames(
-                        "__wab_instance",
-                        sty.iconRow__gtKxf
-                      )}
-                      iconEntry={
-                        <CashsvgIcon
-                          className={classNames(projectcss.all, sty.svg__mQsQj)}
-                          role={"img"}
-                        />
-                      }
-                      staticText={"Componență preț "}
-                      visualVariations={["defaultColor", "newlineDynamicText"]}
-                    >
-                      {"7.4 lei / m³= 280 lei / 91 m³"}
-                    </IconRow>
-                  </div>
-                ) : null
-              }
-              cardType={"contentOnly" as const}
-              className={classNames("__wab_instance", sty.cardWall)}
-              decorations={["secondaryCard"]}
-            />
-          }
-          title={
-            <Title
-              data-plasmic-name={"title"}
-              data-plasmic-override={overrides.title}
-              className={classNames("__wab_instance", sty.title)}
-            >
-              {"Apartament 1"}
-            </Title>
-          }
-          withFooter={true}
-        >
-          <ConsumptionIndexCard
-            data-plasmic-name={"consumptionIndexCard"}
-            data-plasmic-override={overrides.consumptionIndexCard}
-            className={classNames("__wab_instance", sty.consumptionIndexCard)}
-            consumptionPlace={"WC"}
-          />
-        </Page>
       </div>
     </React.Fragment>
   ) as React.ReactElement | null;
@@ -256,28 +305,25 @@ const PlasmicDescendants = {
     "backButton",
     "page",
     "title",
+    "text",
     "consumptionIndexCard",
     "enterIdxBtn",
-    "cardWall",
-    "freeBox",
-    "text"
+    "totalBreakdown"
   ],
   backButton: ["backButton"],
   page: [
     "page",
     "title",
+    "text",
     "consumptionIndexCard",
     "enterIdxBtn",
-    "cardWall",
-    "freeBox",
-    "text"
+    "totalBreakdown"
   ],
-  title: ["title"],
+  title: ["title", "text"],
+  text: ["text"],
   consumptionIndexCard: ["consumptionIndexCard"],
   enterIdxBtn: ["enterIdxBtn"],
-  cardWall: ["cardWall", "freeBox", "text"],
-  freeBox: ["freeBox", "text"],
-  text: ["text"]
+  totalBreakdown: ["totalBreakdown"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -287,11 +333,10 @@ type NodeDefaultElementType = {
   backButton: "div";
   page: typeof Page;
   title: typeof Title;
+  text: "div";
   consumptionIndexCard: typeof ConsumptionIndexCard;
   enterIdxBtn: typeof Button;
-  cardWall: typeof CardWall;
-  freeBox: "div";
-  text: "div";
+  totalBreakdown: typeof CardWall;
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -354,11 +399,10 @@ export const PlasmicWaterConsumption = Object.assign(
     backButton: makeNodeComponent("backButton"),
     page: makeNodeComponent("page"),
     title: makeNodeComponent("title"),
+    text: makeNodeComponent("text"),
     consumptionIndexCard: makeNodeComponent("consumptionIndexCard"),
     enterIdxBtn: makeNodeComponent("enterIdxBtn"),
-    cardWall: makeNodeComponent("cardWall"),
-    freeBox: makeNodeComponent("freeBox"),
-    text: makeNodeComponent("text"),
+    totalBreakdown: makeNodeComponent("totalBreakdown"),
 
     // Metadata about props expected for PlasmicWaterConsumption
     internalVariantProps: PlasmicWaterConsumption__VariantProps,
