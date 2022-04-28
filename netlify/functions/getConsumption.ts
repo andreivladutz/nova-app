@@ -48,8 +48,22 @@ export async function getConsumption(
     (consumption) => consumption.apartmentNo === user.apartmentNo
   );
 
+  const prevConsumption = await getPreviousConsumption(billId, userToken);
+  const {
+    indexWC: prevIndexWC = 0,
+    indexBathroom: prevIndexBathroom = 0,
+    indexKitchen: prevIndexKitchen = 0,
+  } = prevConsumption || {};
+
   if (userConsumption) {
-    return userConsumption;
+    return [
+      userConsumption,
+      {
+        prevIndexWC,
+        prevIndexBathroom,
+        prevIndexKitchen,
+      },
+    ] as const;
   }
 
   // By default, if a consumption does not exist
@@ -77,27 +91,53 @@ export async function getConsumption(
     return ErrorCode.NOT_LATEST_BILL_CONSUMPTION;
   }
 
-  const prevConsumption = await getPreviousConsumption(billId, userToken);
-  const {
-    indexWC = 0,
-    indexBathroom = 0,
-    indexKitchen = 0,
-  } = prevConsumption || {};
-
-  return dbWrapper.create({
-    name: `Ap-${user.apartmentNo}-bill-${billId}`,
-    indexWC,
-    indexBathroom,
-    indexKitchen,
-    date: toIsoString(new Date()),
-    confirmed: false,
-    total: 0,
-    // External key to Users
-    apartmentNo: user.apartmentNo,
-    // External key to Bills
-    billId,
-  });
+  return [
+    await dbWrapper.create({
+      name: `Ap-${user.apartmentNo}-bill-${billId}`,
+      indexWC: prevIndexWC,
+      indexBathroom: prevIndexBathroom,
+      indexKitchen: prevIndexKitchen,
+      date: toIsoString(new Date()),
+      confirmed: false,
+      total: 0,
+      // External key to Users
+      apartmentNo: user.apartmentNo,
+      // External key to Bills
+      billId,
+    }),
+    {
+      prevIndexWC,
+      prevIndexBathroom,
+      prevIndexKitchen,
+    },
+  ] as const;
 }
+
+const _getConsumptionResponse = (
+  billId: number,
+  userToken: string,
+  createsIfNotFound = true
+) =>
+  getConsumption(billId, userToken, createsIfNotFound).then((response) => {
+    if (typeof response === "number") {
+      return response;
+    }
+
+    const [consumption, prevConsumption] = response;
+    const consumptionResponse =
+      consumption as Consumption as ConsumptionResponse;
+
+    // Add the previous consumption's index(es)
+    // so the client doesn't have to make another api call
+    consumptionResponse.prevIndexWC = prevConsumption.prevIndexWC;
+    consumptionResponse.prevIndexBathroom = prevConsumption.prevIndexBathroom;
+    consumptionResponse.prevIndexKitchen = prevConsumption.prevIndexKitchen;
+    // Add the notion pageId to the response
+    // so the client can reference it in later api calls
+    consumptionResponse.consumptionPageId = consumption.$notion.pageId;
+
+    return consumption;
+  });
 
 const handler: Handler = (event) =>
   server
@@ -115,7 +155,7 @@ const handler: Handler = (event) =>
     })
     .then(
       onSuccess(({ billId, token }) =>
-        notionCallWithErrHandling(getConsumption(billId, token))
+        notionCallWithErrHandling(_getConsumptionResponse(billId, token))
       )
     )
     .then(
@@ -135,11 +175,6 @@ const handler: Handler = (event) =>
         if (!consumption) {
           return userNotFoundErr;
         }
-
-        // Add the notion pageId to the response
-        // so the client can reference it in later api calls
-        (consumption as Consumption as ConsumptionResponse).consumptionPageId =
-          consumption.$notion.pageId;
 
         return successResult(consumption);
       })

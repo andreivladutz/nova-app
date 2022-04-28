@@ -13,6 +13,10 @@ export type UpdateConsumptionBody = {
 
 export type ConsumptionResponse = Consumption & {
   consumptionPageId: string;
+
+  prevIndexWC: number;
+  prevIndexBathroom: number;
+  prevIndexKitchen: number;
 };
 
 // When a consumption is updated, it also computes and returns

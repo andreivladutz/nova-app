@@ -31,9 +31,11 @@ const updateConsumption = async (updateBody: UpdateConsumptionBody) => {
 
   // The getting of the consumption might fail if the user is not found
   // or if the consumption itself is not found (we do not create one instead)
-  const consumptionObj = (await getConsumption(billId, userToken, false)) as
-    | (Consumption & NotionAcessPrototype)
-    | null;
+  const [consumptionObj] = (await getConsumption(
+    billId,
+    userToken,
+    false
+  )) as readonly [(Consumption & NotionAcessPrototype) | null, unknown];
   if (!consumptionObj) {
     return null;
   }
