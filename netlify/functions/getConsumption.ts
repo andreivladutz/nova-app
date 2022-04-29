@@ -99,6 +99,7 @@ export async function getConsumption(
       indexKitchen: prevIndexKitchen,
       date: toIsoString(new Date()),
       confirmed: false,
+      hasUpdated: false,
       total: 0,
       consumptionCubeM: 0,
       // External key to Users

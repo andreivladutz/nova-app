@@ -5,6 +5,9 @@ export type Consumption = {
   indexKitchen: number;
   date: string;
   confirmed: boolean;
+  // Marks that the consumption has been updated at least once
+  // i.e. the user entered their water consumption
+  hasUpdated: boolean;
   total: number;
   consumptionCubeM: number;
   // External key to Users
@@ -49,6 +52,7 @@ export const consumptionKeys = keysArrayToMap<Consumption>([
   "apartmentNo",
   "billId",
   "consumptionCubeM",
+  "hasUpdated",
 ] as const);
 
 export const userKeys = keysArrayToMap<User>([

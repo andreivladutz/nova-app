@@ -59,6 +59,7 @@ function WaterConsumption_(
     indexBathroom,
     indexKitchen,
     consumptionCubeM,
+    hasUpdated,
   } = consumption.data || {};
   const { total: totalBill, waterConsumption } = latestBill.data || {};
   const pricePerCubeM = ((totalBill || 1) / (waterConsumption || 1)).toFixed(2);
@@ -85,7 +86,7 @@ function WaterConsumption_(
   }, [indexWC, indexBathroom, indexKitchen]);
 
   // TODO : Remove this
-  const [hasUpdated, setHasUpdated] = React.useState(false);
+  const [ButtonIsLoading, setButtonIsLoading] = React.useState(false);
 
   const consumptionValues = [
     {
@@ -175,20 +176,20 @@ function WaterConsumption_(
       )}
       enterIdxBtn={buttonLoader(
         () => {
-          setHasUpdated(true);
+          setButtonIsLoading(true);
         },
         {},
         SKELETON_PRIMARY_COLOR,
         {
-          isLoading: hasUpdated,
+          isLoading: ButtonIsLoading,
         }
       )}
       totalText={`${total} LEI`}
       waterConsumption={`${consumptionCubeM} m³`}
       priceBreakdown={`${pricePerCubeM} lei / m³ = ${totalBill} lei / ${waterConsumption} m³`}
       totalBreakdown={{
-        // TODO: Smarter hiding of the total breakdown
-        render: (props, Component) => !isLoading && <Component {...props} />,
+        render: (props, Component) =>
+          !isLoading && hasUpdated && <Component {...props} />,
       }}
     />
   );

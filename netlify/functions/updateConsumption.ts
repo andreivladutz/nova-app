@@ -93,6 +93,8 @@ const updateConsumption = async (updateBody: UpdateConsumptionBody) => {
 
   // Also update the date to reflect the latest update time
   consumptionObj.date = toIsoString(new Date());
+  // Mark that the consumption has been updated at least once
+  consumptionObj.hasUpdated = true;
 
   const updatedConsumption = (await dbWrapper.update(
     consumptionObj
