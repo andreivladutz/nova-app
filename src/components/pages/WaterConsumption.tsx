@@ -6,7 +6,7 @@ import {
   DefaultWaterConsumptionProps,
 } from "../plasmic/apa_nova_app/PlasmicWaterConsumption";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import { ROUTES, STYLING } from "../../utils/CONST";
+import { CLIENT_ERR_CODES, ROUTES, STYLING } from "../../utils/CONST";
 import useAppNavigation from "../../hooks/useAppNavigation";
 import { IndexInput } from "../proprietary/IndexInput";
 import useDefaultQueries from "../../hooks/useDefaultQueries";
@@ -21,6 +21,7 @@ import AppError from "../proprietary/AppError";
 import apiErrToClientErr from "../../apiConsumer/apiErrToClientErr";
 
 const { SKELETON_PRIMARY_COLOR } = STYLING;
+const { MISSING_USER_TOKEN, INVALID_USER_TOKEN } = CLIENT_ERR_CODES;
 
 export interface WaterConsumptionProps extends DefaultWaterConsumptionProps {}
 
@@ -36,6 +37,12 @@ function WaterConsumption_(
     latestBill.data?.billId,
     userToken
   );
+
+  React.useEffect(() => {
+    if ([MISSING_USER_TOKEN, INVALID_USER_TOKEN].includes(appError!)) {
+      goBackTo(ROUTES.HOMEPAGE);
+    }
+  });
 
   const { isError: isBillError, error: billError } = latestBill;
   const { isError: isUserError, error: userError } = user;

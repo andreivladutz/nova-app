@@ -23,6 +23,7 @@ import apiErrToClientErr from "../../apiConsumer/apiErrToClientErr";
 import { HttpClientError } from "../../apiConsumer/client";
 
 const { SKELETON_PRIMARY_COLOR } = STYLING;
+const { MISSING_USER_TOKEN, INVALID_USER_TOKEN } = CLIENT_ERR_CODES;
 
 export const makeButtonLoader =
   (isLoading: boolean) =>
@@ -118,7 +119,10 @@ function Homepage_(props: HomepageProps, ref: HTMLElementRefOf<"div">) {
         },
         SKELETON_PRIMARY_COLOR,
         {
-          isDisabled: isBillError || isUserError,
+          isDisabled:
+            isBillError ||
+            isUserError ||
+            [MISSING_USER_TOKEN, INVALID_USER_TOKEN].includes(appError!),
         }
       )}
     />
