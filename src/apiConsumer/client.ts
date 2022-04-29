@@ -43,13 +43,15 @@ export const isHttpClientError = (error: any): error is HttpClientError =>
 const basePath = `${window.location.origin}/.netlify/functions`;
 const url = (endpoint: string) => `${basePath}${endpoint}`;
 
-const apiCall = async <R extends object>(
+const apiCall = async <R extends object, B extends object>(
   endpoint: string,
-  method: HttpVerb
+  method: HttpVerb,
+  body?: B
 ) => {
   try {
     const response = await fetch(url(endpoint), {
       method,
+      body: body ? JSON.stringify(body) : undefined,
     });
 
     if (response.ok) {
@@ -75,7 +77,7 @@ export const client = {
     endpoint: string,
     queryStringParams?: Record<string, string>
   ) =>
-    apiCall<R>(
+    apiCall<R, {}>(
       `${endpoint}${
         queryStringParams
           ? `?${new URLSearchParams(queryStringParams).toString()}`
@@ -83,4 +85,6 @@ export const client = {
       }`,
       HttpVerb.get
     ),
+  put: <R extends object, B extends object>(endpoint: string, body: B) =>
+    apiCall<R, B>(endpoint, HttpVerb.put, body),
 };

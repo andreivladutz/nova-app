@@ -21,6 +21,6 @@ export type ConsumptionResponse = Consumption & {
 
 // When a consumption is updated, it also computes and returns
 // the price per cube meter of water for this current bill
-export type UpdateConsumptionResponse = Consumption & {
+export type UpdateConsumptionResponse = ConsumptionResponse & {
   pricePerCubeM: number;
 };

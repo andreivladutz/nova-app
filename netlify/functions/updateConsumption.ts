@@ -15,10 +15,13 @@ import {
 } from "../utils/sharedDomain";
 import { createDbWrapper } from "../utils/notionApiWrappers";
 import notionCreds from "../utils/notionCreds";
-import { getConsumption } from "./getConsumption";
+import {
+  getConsumption,
+  mergeWithPrevIndexVals,
+  PrevIndexVals,
+} from "./getConsumption";
 import { toIsoString } from "../utils/notionUtils/toIsoString";
 import { getLatestBill } from "./getLatestBill";
-import getPreviousConsumption from "../utils/notionAccess/getPreviousConsumption";
 import { NotionAcessPrototype } from "../utils/notionUtils/notionPage";
 
 const updateConsumption = async (updateBody: UpdateConsumptionBody) => {
@@ -29,13 +32,17 @@ const updateConsumption = async (updateBody: UpdateConsumptionBody) => {
 
   const { billId, userToken, consumptionPageId } = updateBody;
 
+  const consumptionResult = await getConsumption(billId, userToken, false);
+  if (!consumptionResult || !Array.isArray(consumptionResult)) {
+    return null;
+  }
+
   // The getting of the consumption might fail if the user is not found
   // or if the consumption itself is not found (we do not create one instead)
-  const [consumptionObj] = (await getConsumption(
-    billId,
-    userToken,
-    false
-  )) as readonly [(Consumption & NotionAcessPrototype) | null, unknown];
+  const [consumptionObj, prevIndexVals] = consumptionResult as readonly [
+    (Consumption & NotionAcessPrototype) | null,
+    PrevIndexVals
+  ];
   if (!consumptionObj) {
     return null;
   }
@@ -67,11 +74,9 @@ const updateConsumption = async (updateBody: UpdateConsumptionBody) => {
     return ErrorCode.NOT_LATEST_BILL_CONSUMPTION;
   }
 
-  const previousConsumption = await getPreviousConsumption(billId, userToken);
-
-  const deltaBathroom = indexBathroom - previousConsumption.indexBathroom;
-  const deltaKitchen = indexKitchen - previousConsumption.indexKitchen;
-  const deltaWC = indexWC - previousConsumption.indexWC;
+  const deltaBathroom = indexBathroom - prevIndexVals.prevIndexBathroom;
+  const deltaKitchen = indexKitchen - prevIndexVals.prevIndexKitchen;
+  const deltaWC = indexWC - prevIndexVals.prevIndexWC;
 
   // Verify if the entered idx is valid,
   // i.e. it is not lower than the previously
@@ -96,16 +101,19 @@ const updateConsumption = async (updateBody: UpdateConsumptionBody) => {
   // Mark that the consumption has been updated at least once
   consumptionObj.hasUpdated = true;
 
-  const updatedConsumption = (await dbWrapper.update(
-    consumptionObj
-  )) as Consumption as UpdateConsumptionResponse;
+  const updatedConsumption = await dbWrapper.update(consumptionObj);
 
   if (!updatedConsumption) {
     return null;
   }
 
-  updatedConsumption.pricePerCubeM = pricePerCubeM;
-  return updatedConsumption;
+  const mergedUpdated = mergeWithPrevIndexVals([
+    updatedConsumption,
+    prevIndexVals,
+  ]) as Consumption as UpdateConsumptionResponse;
+
+  mergedUpdated.pricePerCubeM = pricePerCubeM;
+  return mergedUpdated;
 };
 
 export const updateConsumptionErr = (code: ErrorCode): [string, ErrorCode] => {

@@ -1,4 +1,10 @@
-import { Bill, ConsumptionResponse, User } from "../shared";
+import {
+  Bill,
+  ConsumptionResponse,
+  UpdateConsumptionBody,
+  UpdateConsumptionResponse,
+  User,
+} from "../shared";
 import { client } from "./client";
 
 export const getUser = (token: string) => {
@@ -14,4 +20,11 @@ export const getConsumption = (billId: number, token: string) => {
     billId: billId.toString(),
     token,
   });
+};
+
+export const updateConsumption = (body: UpdateConsumptionBody) => {
+  return client.put<UpdateConsumptionResponse, UpdateConsumptionBody>(
+    "/updateConsumption",
+    body
+  );
 };

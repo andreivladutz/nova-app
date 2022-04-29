@@ -19,6 +19,7 @@ import { ConsumptionResponse } from "../utils/sharedDomain";
 import getPreviousConsumption from "../utils/notionAccess/getPreviousConsumption";
 import { getLatestBill } from "./getLatestBill";
 import { updateConsumptionErr } from "./updateConsumption";
+import { PickSubset, PromiseParam } from "../utils/types/utilitary";
 
 export async function getConsumption(
   billId: number,
@@ -115,31 +116,37 @@ export async function getConsumption(
   ] as const;
 }
 
+type GetConsumptionResult = PromiseParam<ReturnType<typeof getConsumption>>;
+export type PrevIndexVals = PickSubset<readonly any[], GetConsumptionResult>[1];
+
+export const mergeWithPrevIndexVals = (response: GetConsumptionResult) => {
+  if (typeof response === "number") {
+    return response;
+  }
+
+  const [consumption, prevConsumption] = response;
+  const consumptionResponse = consumption as Consumption as ConsumptionResponse;
+
+  // Add the previous consumption's index(es)
+  // so the client doesn't have to make another api call
+  consumptionResponse.prevIndexWC = prevConsumption.prevIndexWC;
+  consumptionResponse.prevIndexBathroom = prevConsumption.prevIndexBathroom;
+  consumptionResponse.prevIndexKitchen = prevConsumption.prevIndexKitchen;
+  // Add the notion pageId to the response
+  // so the client can reference it in later api calls
+  consumptionResponse.consumptionPageId = consumption.$notion.pageId;
+
+  return consumption;
+};
+
 const _getConsumptionResponse = (
   billId: number,
   userToken: string,
   createsIfNotFound = true
 ) =>
-  getConsumption(billId, userToken, createsIfNotFound).then((response) => {
-    if (typeof response === "number") {
-      return response;
-    }
-
-    const [consumption, prevConsumption] = response;
-    const consumptionResponse =
-      consumption as Consumption as ConsumptionResponse;
-
-    // Add the previous consumption's index(es)
-    // so the client doesn't have to make another api call
-    consumptionResponse.prevIndexWC = prevConsumption.prevIndexWC;
-    consumptionResponse.prevIndexBathroom = prevConsumption.prevIndexBathroom;
-    consumptionResponse.prevIndexKitchen = prevConsumption.prevIndexKitchen;
-    // Add the notion pageId to the response
-    // so the client can reference it in later api calls
-    consumptionResponse.consumptionPageId = consumption.$notion.pageId;
-
-    return consumption;
-  });
+  getConsumption(billId, userToken, createsIfNotFound).then(
+    mergeWithPrevIndexVals
+  );
 
 const handler: Handler = (event) =>
   server

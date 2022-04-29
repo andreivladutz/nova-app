@@ -2,7 +2,6 @@ import { Client } from "@notionhq/client";
 import { NotionAcessPrototype, notionPage } from "./notionUtils/notionPage";
 import {
   NotionObject,
-  notionObjectToPlainObject,
   plainObjectToNotionObject,
 } from "./notionUtils/schemaObjectMappings";
 import {
