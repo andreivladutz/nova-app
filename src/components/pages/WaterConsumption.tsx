@@ -16,6 +16,7 @@ import SkeletonLoader, {
 import { useAppCtx } from "../../contexts/AppCtxProvider";
 import ConsumptionIndexCard from "../ConsumptionIndexCard";
 import { makeButtonLoader } from "./Homepage";
+import useUpdateConsumption from "../../hooks/useUpdateConsumption";
 
 const { SKELETON_PRIMARY_COLOR } = STYLING;
 
@@ -29,7 +30,13 @@ function WaterConsumption_(
   const { userToken } = useAppCtx();
   const { consumption, user, latestBill } = useDefaultQueries(userToken);
 
-  const isLoading = !consumption.isSuccess || !user.isSuccess;
+  const { mutate, isLoading: isMutationInProgress } = useUpdateConsumption(
+    latestBill.data?.billId,
+    userToken
+  );
+
+  const isLoading =
+    !consumption.isSuccess || !user.isSuccess || !latestBill.isSuccess;
   const buttonLoader = makeButtonLoader(isLoading);
   const componentLoader = (
     key: string,
@@ -60,8 +67,9 @@ function WaterConsumption_(
     indexKitchen,
     consumptionCubeM,
     hasUpdated,
+    consumptionPageId,
   } = consumption.data || {};
-  const { total: totalBill, waterConsumption } = latestBill.data || {};
+  const { total: totalBill, waterConsumption, billId } = latestBill.data || {};
   const pricePerCubeM = ((totalBill || 1) / (waterConsumption || 1)).toFixed(2);
 
   const [stateWC, setStateWC] = React.useState(indexWC);
@@ -72,6 +80,8 @@ function WaterConsumption_(
 
   const [stateKitchen, setStateKitchen] = React.useState(indexKitchen);
   const [isValidKitchen, setIsValidKitchen] = React.useState(true);
+
+  const valuesAreValid = isValidWC && isValidBathroom && isValidKitchen;
 
   React.useEffect(() => {
     if (indexWC !== undefined) {
@@ -85,8 +95,17 @@ function WaterConsumption_(
     }
   }, [indexWC, indexBathroom, indexKitchen]);
 
-  // TODO : Remove this
-  const [ButtonIsLoading, setButtonIsLoading] = React.useState(false);
+  const upateConsumption = () =>
+    mutate({
+      indexWC: stateWC!,
+      indexBathroom: stateBathroom!,
+      indexKitchen: stateKitchen!,
+
+      userToken: userToken!,
+      billId: billId!,
+      // The notion page id
+      consumptionPageId: consumptionPageId!,
+    });
 
   const consumptionValues = [
     {
@@ -176,16 +195,21 @@ function WaterConsumption_(
       )}
       enterIdxBtn={buttonLoader(
         () => {
-          setButtonIsLoading(true);
+          if (!valuesAreValid) {
+            return;
+          }
+
+          upateConsumption();
         },
         {},
         SKELETON_PRIMARY_COLOR,
         {
-          isLoading: ButtonIsLoading,
+          isLoading: isMutationInProgress,
+          isDisabled: !valuesAreValid,
         }
       )}
-      totalText={`${total} LEI`}
-      waterConsumption={`${consumptionCubeM} m³`}
+      totalText={`${(total || 0).toFixed(2)} LEI`}
+      waterConsumption={`${consumptionCubeM || 0} m³`}
       priceBreakdown={`${pricePerCubeM} lei / m³ = ${totalBill} lei / ${waterConsumption} m³`}
       totalBreakdown={{
         render: (props, Component) =>

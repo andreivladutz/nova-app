@@ -160,10 +160,7 @@ const handler: Handler = (event) =>
         for (const [propName, expectedType] of Object.entries(
           validationSchema
         )) {
-          if (
-            !updateBody[propName] ||
-            typeof updateBody[propName] !== expectedType
-          ) {
+          if (typeof updateBody[propName] !== expectedType) {
             return handlerError(
               apiErrors.badRequest(
                 ...updateConsumptionErr(ErrorCode.INVALID_BODY)

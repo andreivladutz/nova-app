@@ -28,25 +28,23 @@ export const IndexInput = ({
   setIsValid = () => {},
   prevIndexVal = 0,
 }: Props) => {
-  const [errMessages, setErrMessages] = React.useState<string[]>([]);
+  const [errMessage, setErrMessage] = React.useState<string | undefined>();
 
   const onChange = (newIdx: string) => {
     setCurrIndexVal(parseInt(newIdx));
 
     if (newIdx.length < INDEX_LEN) {
-      setErrMessages(Array.from(new Set([...errMessages, ERR_MSG.TOO_SHORT])));
+      setErrMessage(ERR_MSG.TOO_SHORT);
       return setIsValid(false);
     }
 
     if (parseInt(newIdx) < prevIndexVal) {
-      setErrMessages(
-        Array.from(new Set([...errMessages, ERR_MSG.INDEX_SMALLER]))
-      );
+      setErrMessage(ERR_MSG.INDEX_SMALLER);
       return setIsValid(false);
     }
 
     if (!isValid) {
-      setErrMessages([]);
+      setErrMessage(undefined);
       setIsValid(true);
     }
   };
@@ -62,9 +60,7 @@ export const IndexInput = ({
         onChange={onChange}
         isValid={isValid}
       />
-      {errMessages.map((errMsg, idx) => (
-        <ErrorMessage key={idx}>{errMsg}</ErrorMessage>
-      ))}
+      {errMessage && <ErrorMessage>{errMessage}</ErrorMessage>}
     </>
   );
 };
