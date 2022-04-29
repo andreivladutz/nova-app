@@ -18,6 +18,7 @@ import SkeletonLoader, {
   SkeletonLoaderProps,
 } from "../proprietary/skeletons/SkeletonLoader";
 import { ButtonProps } from "../Button";
+import ErrorMessage from "../ErrorMessage";
 
 const { SKELETON_PRIMARY_COLOR } = STYLING;
 
@@ -78,6 +79,7 @@ function Homepage_(props: HomepageProps, ref: HTMLElementRefOf<"div">) {
       downloadBillBtn={buttonLoader(() =>
         downloadFile(data!.file, "factura-apanova")
       )}
+      errorMessage={null && <ErrorMessage>Hello World</ErrorMessage>}
       enterIdxBtn={buttonLoader(
         () => navigate(ROUTES.WATER_CONSUMPTION),
         {

@@ -17,6 +17,7 @@ import { useAppCtx } from "../../contexts/AppCtxProvider";
 import ConsumptionIndexCard from "../ConsumptionIndexCard";
 import { makeButtonLoader } from "./Homepage";
 import useUpdateConsumption from "../../hooks/useUpdateConsumption";
+import ErrorMessage from "../ErrorMessage";
 
 const { SKELETON_PRIMARY_COLOR } = STYLING;
 
@@ -193,6 +194,7 @@ function WaterConsumption_(
         },
         <div>{`Apartament ${apartmentNo}`}</div>
       )}
+      errorMessage={null && <ErrorMessage>Hello World</ErrorMessage>}
       enterIdxBtn={buttonLoader(
         () => {
           if (!valuesAreValid) {

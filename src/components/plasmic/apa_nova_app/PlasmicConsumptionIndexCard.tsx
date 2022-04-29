@@ -63,7 +63,7 @@ export const PlasmicConsumptionIndexCard__ArgProps = new Array<ArgPropType>(
 );
 
 export type PlasmicConsumptionIndexCard__OverridesType = {
-  root?: p.Flex<typeof CardWall>;
+  root2?: p.Flex<typeof CardWall>;
   freeBox?: p.Flex<"div">;
   iconRow?: p.Flex<typeof IconRow>;
   iconEntry?: p.Flex<"svg">;
@@ -88,8 +88,8 @@ function PlasmicConsumptionIndexCard__RenderFunc(props: {
 
   return (
     <CardWall
-      data-plasmic-name={"root"}
-      data-plasmic-override={overrides.root}
+      data-plasmic-name={"root2"}
+      data-plasmic-override={overrides.root2}
       data-plasmic-root={true}
       data-plasmic-for-node={forNode}
       cardContent={p.renderPlasmicSlot({
@@ -148,7 +148,7 @@ function PlasmicConsumptionIndexCard__RenderFunc(props: {
         </div>
       }
       cardType={"noCta" as const}
-      className={classNames("__wab_instance", sty.root)}
+      className={classNames("__wab_instance", sty.root2)}
       contentCentered={true}
       shrinkedContents={true}
     />
@@ -156,7 +156,7 @@ function PlasmicConsumptionIndexCard__RenderFunc(props: {
 }
 
 const PlasmicDescendants = {
-  root: ["root", "freeBox", "iconRow", "iconEntry"],
+  root2: ["root2", "freeBox", "iconRow", "iconEntry"],
   freeBox: ["freeBox", "iconRow", "iconEntry"],
   iconRow: ["iconRow", "iconEntry"],
   iconEntry: ["iconEntry"],
@@ -165,7 +165,7 @@ type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
   typeof PlasmicDescendants[T][number];
 type NodeDefaultElementType = {
-  root: typeof CardWall;
+  root2: typeof CardWall;
   freeBox: "div";
   iconRow: typeof IconRow;
   iconEntry: "svg";
@@ -215,7 +215,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
       forNode: nodeName,
     });
   };
-  if (nodeName === "root") {
+  if (nodeName === "root2") {
     func.displayName = "PlasmicConsumptionIndexCard";
   } else {
     func.displayName = `PlasmicConsumptionIndexCard.${nodeName}`;
@@ -225,7 +225,7 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
 
 export const PlasmicConsumptionIndexCard = Object.assign(
   // Top-level PlasmicConsumptionIndexCard renders the root element
-  makeNodeComponent("root"),
+  makeNodeComponent("root2"),
   {
     // Helper components rendering sub-elements
     freeBox: makeNodeComponent("freeBox"),

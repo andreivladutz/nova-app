@@ -63,6 +63,7 @@ export type PlasmicHomepage__ArgsType = {
   total?: React.ReactNode;
   waterConsumption?: React.ReactNode;
   dueDate?: React.ReactNode;
+  errorMessage?: React.ReactNode;
 };
 
 type ArgPropType = keyof PlasmicHomepage__ArgsType;
@@ -70,7 +71,8 @@ export const PlasmicHomepage__ArgProps = new Array<ArgPropType>(
   "emittedDate",
   "total",
   "waterConsumption",
-  "dueDate"
+  "dueDate",
+  "errorMessage"
 );
 
 export type PlasmicHomepage__OverridesType = {
@@ -98,6 +100,7 @@ export interface DefaultHomepageProps {
   total?: React.ReactNode;
   waterConsumption?: React.ReactNode;
   dueDate?: React.ReactNode;
+  errorMessage?: React.ReactNode;
   className?: string;
 }
 
@@ -137,25 +140,38 @@ function PlasmicHomepage__RenderFunc(props: {
           data-plasmic-override={overrides.page}
           className={classNames("__wab_instance", sty.page)}
           cta={
-            <CardWall
-              data-plasmic-name={"hiddenCard"}
-              data-plasmic-override={overrides.hiddenCard}
-              bgHidden={true}
-              cardCta={
-                <Button
-                  data-plasmic-name={"enterIdxBtn"}
-                  data-plasmic-override={overrides.enterIdxBtn}
-                  btnType={"primary" as const}
-                  className={classNames("__wab_instance", sty.enterIdxBtn)}
-                  shape={"rounded" as const}
-                  showEndIcon={true}
-                >
-                  {"Introducere Index"}
-                </Button>
-              }
-              cardType={"ctaOnly" as const}
-              className={classNames("__wab_instance", sty.hiddenCard)}
-            />
+            <React.Fragment>
+              {p.renderPlasmicSlot({
+                defaultContents: (
+                  <div
+                    className={classNames(projectcss.all, sty.freeBox__rhsq)}
+                  />
+                ),
+
+                value: args.errorMessage
+              })}
+
+              <CardWall
+                data-plasmic-name={"hiddenCard"}
+                data-plasmic-override={overrides.hiddenCard}
+                bgHidden={true}
+                cardContent={null}
+                cardCta={
+                  <Button
+                    data-plasmic-name={"enterIdxBtn"}
+                    data-plasmic-override={overrides.enterIdxBtn}
+                    btnType={"primary" as const}
+                    className={classNames("__wab_instance", sty.enterIdxBtn)}
+                    shape={"rounded" as const}
+                    showEndIcon={true}
+                  >
+                    {"Introducere Index"}
+                  </Button>
+                }
+                cardType={"ctaOnly" as const}
+                className={classNames("__wab_instance", sty.hiddenCard)}
+              />
+            </React.Fragment>
           }
           title={
             <Title

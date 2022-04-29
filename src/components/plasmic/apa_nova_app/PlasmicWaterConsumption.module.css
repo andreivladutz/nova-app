@@ -70,6 +70,19 @@
   max-width: 100%;
   position: relative;
 }
+.freeBox__ehZDz {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  flex-grow: 0;
+  min-width: 0;
+  padding: 0px;
+}
 .enterIdxBtn:global(.__wab_instance) {
   position: relative;
 }

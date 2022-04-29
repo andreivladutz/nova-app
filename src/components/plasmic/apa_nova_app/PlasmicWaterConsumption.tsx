@@ -63,6 +63,7 @@ export type PlasmicWaterConsumption__ArgsType = {
   totalText?: React.ReactNode;
   waterConsumption?: React.ReactNode;
   priceBreakdown?: React.ReactNode;
+  errorMessage?: React.ReactNode;
 };
 
 type ArgPropType = keyof PlasmicWaterConsumption__ArgsType;
@@ -70,7 +71,8 @@ export const PlasmicWaterConsumption__ArgProps = new Array<ArgPropType>(
   "apartmentNumber",
   "totalText",
   "waterConsumption",
-  "priceBreakdown"
+  "priceBreakdown",
+  "errorMessage"
 );
 
 export type PlasmicWaterConsumption__OverridesType = {
@@ -89,6 +91,7 @@ export interface DefaultWaterConsumptionProps {
   totalText?: React.ReactNode;
   waterConsumption?: React.ReactNode;
   priceBreakdown?: React.ReactNode;
+  errorMessage?: React.ReactNode;
   className?: string;
 }
 
@@ -140,23 +143,35 @@ function PlasmicWaterConsumption__RenderFunc(props: {
             data-plasmic-override={overrides.page}
             className={classNames("__wab_instance", sty.page)}
             cta={
-              <Button
-                data-plasmic-name={"enterIdxBtn"}
-                data-plasmic-override={overrides.enterIdxBtn}
-                btnType={"primary" as const}
-                className={classNames("__wab_instance", sty.enterIdxBtn)}
-                endIcon={
-                  true ? (
-                    <IconIcon
-                      className={classNames(projectcss.all, sty.svg___1Sy2O)}
-                      role={"img"}
+              <React.Fragment>
+                {p.renderPlasmicSlot({
+                  defaultContents: (
+                    <div
+                      className={classNames(projectcss.all, sty.freeBox__ehZDz)}
                     />
-                  ) : null
-                }
-                shape={"rounded" as const}
-              >
-                {"Salvează"}
-              </Button>
+                  ),
+
+                  value: args.errorMessage
+                })}
+
+                <Button
+                  data-plasmic-name={"enterIdxBtn"}
+                  data-plasmic-override={overrides.enterIdxBtn}
+                  btnType={"primary" as const}
+                  className={classNames("__wab_instance", sty.enterIdxBtn)}
+                  endIcon={
+                    true ? (
+                      <IconIcon
+                        className={classNames(projectcss.all, sty.svg___1Sy2O)}
+                        role={"img"}
+                      />
+                    ) : null
+                  }
+                  shape={"rounded" as const}
+                >
+                  {"Salvează"}
+                </Button>
+              </React.Fragment>
             }
             footer={
               <CardWall
