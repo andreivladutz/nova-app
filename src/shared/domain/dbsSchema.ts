@@ -6,6 +6,7 @@ export type Consumption = {
   date: string;
   confirmed: boolean;
   total: number;
+  consumptionCubeM: number;
   // External key to Users
   apartmentNo: number;
   // External key to Bills
@@ -47,6 +48,7 @@ export const consumptionKeys = keysArrayToMap<Consumption>([
   "total",
   "apartmentNo",
   "billId",
+  "consumptionCubeM",
 ] as const);
 
 export const userKeys = keysArrayToMap<User>([

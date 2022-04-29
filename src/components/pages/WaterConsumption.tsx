@@ -58,6 +58,7 @@ function WaterConsumption_(
     indexWC,
     indexBathroom,
     indexKitchen,
+    consumptionCubeM,
   } = consumption.data || {};
   const { total: totalBill, waterConsumption } = latestBill.data || {};
   const pricePerCubeM = ((totalBill || 1) / (waterConsumption || 1)).toFixed(2);
@@ -120,7 +121,7 @@ function WaterConsumption_(
         SKELETON_PRIMARY_COLOR
       )}
       totalText={`${total} LEI`}
-      waterConsumption={"2000 m³"}
+      waterConsumption={`${consumptionCubeM} m³`}
       priceBreakdown={`${pricePerCubeM} lei / m³ = ${totalBill} lei / ${waterConsumption} m³`}
       totalBreakdown={{
         // TODO: Smarter hiding of the total breakdown

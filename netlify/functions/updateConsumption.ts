@@ -88,7 +88,7 @@ const updateConsumption = async (updateBody: UpdateConsumptionBody) => {
   consumptionObj.indexWC = indexWC;
   consumptionObj.indexKitchen = indexKitchen;
 
-  // TODO: Add consumptionCubeM property to the consumption obj
+  consumptionObj.consumptionCubeM = consumptionCubeM;
   consumptionObj.total = pricePerCubeM * consumptionCubeM;
 
   // Also update the date to reflect the latest update time

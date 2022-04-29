@@ -100,6 +100,7 @@ export async function getConsumption(
       date: toIsoString(new Date()),
       confirmed: false,
       total: 0,
+      consumptionCubeM: 0,
       // External key to Users
       apartmentNo: user.apartmentNo,
       // External key to Bills
