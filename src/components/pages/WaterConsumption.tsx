@@ -15,9 +15,10 @@ import SkeletonLoader, {
 } from "../proprietary/skeletons/SkeletonLoader";
 import { useAppCtx } from "../../contexts/AppCtxProvider";
 import ConsumptionIndexCard from "../ConsumptionIndexCard";
-import { makeButtonLoader } from "./Homepage";
+import { makeButtonLoader, processHomepageErrs } from "./Homepage";
 import useUpdateConsumption from "../../hooks/useUpdateConsumption";
-import ErrorMessage from "../ErrorMessage";
+import AppError from "../proprietary/AppError";
+import apiErrToClientErr from "../../apiConsumer/apiErrToClientErr";
 
 const { SKELETON_PRIMARY_COLOR } = STYLING;
 
@@ -28,13 +29,40 @@ function WaterConsumption_(
   ref: HTMLElementRefOf<"div">
 ) {
   const { goBackTo } = useAppNavigation();
-  const { userToken } = useAppCtx();
+  const { userToken, appError, setAppError } = useAppCtx();
   const { consumption, user, latestBill } = useDefaultQueries(userToken);
 
   const { mutate, isLoading: isMutationInProgress } = useUpdateConsumption(
     latestBill.data?.billId,
     userToken
   );
+
+  const { isError: isBillError, error: billError } = latestBill;
+  const { isError: isUserError, error: userError } = user;
+  const { isError: isConsumptionError, error: consumptionError } = consumption;
+  React.useEffect(() => {
+    if (isUserError || isBillError) {
+      return processHomepageErrs(
+        isBillError,
+        isUserError,
+        billError,
+        userError,
+        setAppError
+      );
+    }
+
+    if (isConsumptionError) {
+      setAppError(apiErrToClientErr(consumptionError));
+    }
+  }, [
+    billError,
+    consumptionError,
+    isBillError,
+    isConsumptionError,
+    isUserError,
+    setAppError,
+    userError,
+  ]);
 
   const isLoading =
     !consumption.isSuccess || !user.isSuccess || !latestBill.isSuccess;
@@ -194,7 +222,7 @@ function WaterConsumption_(
         },
         <div>{`Apartament ${apartmentNo}`}</div>
       )}
-      errorMessage={null && <ErrorMessage>Hello World</ErrorMessage>}
+      errorMessage={<AppError>{appError}</AppError>}
       enterIdxBtn={buttonLoader(
         () => {
           if (!valuesAreValid) {

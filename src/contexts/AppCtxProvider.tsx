@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { QS_PARAMS, ROUTES } from "../utils/CONST";
+import { CLIENT_ERR_CODES, QS_PARAMS, ROUTES } from "../utils/CONST";
 import throwingDefault from "./utils/throwingDefault";
 
 const useAppStateProvider = () => {
@@ -15,6 +15,9 @@ const useAppStateProvider = () => {
   const localStorageToken = localStorage.getItem(USER_TOKEN);
 
   const [userToken] = useState(searchParamToken || localStorageToken);
+  const [appError, setAppError] = useState<CLIENT_ERR_CODES | null>(
+    !userToken ? CLIENT_ERR_CODES.MISSING_USER_TOKEN : null
+  );
 
   // We should keep the token both in the qs and in the localStorage, so covering:
   // - token is coming from the qs, also store it in the localStorage
@@ -46,6 +49,9 @@ const useAppStateProvider = () => {
 
     previousRoutes,
     setPreviousRoutes,
+
+    appError,
+    setAppError,
   };
 };
 

@@ -10,31 +10,58 @@ export enum HttpVerb {
 // Make a custom error class which can be used to identify the http errors
 // "thrown" or returned by the useQuery hook of react-query
 export class HttpClientError extends Error {
-  errorCode: number;
+  errorCode: ErrorCode;
   errorBody: ApiError;
+
+  // e.g. 404
+  statusCode: number;
+
+  endpoint: string;
   isUnexpected?: boolean;
+  isBackEndErr?: boolean;
 
   constructor(
     errMsg: string,
-    errorCode: number,
+    statusCode: number,
     errorBody: ApiError,
+    endpoint: string,
     isUnexpected?: boolean
   ) {
     super(errMsg);
 
-    this.errorCode = errorCode;
+    this.statusCode = statusCode;
     this.errorBody = errorBody;
+    this.errorCode = errorBody.errorCode;
+
+    this.endpoint = endpoint;
     this.isUnexpected = isUnexpected;
   }
 }
 
-const unexpectedHttpErr = (reason: string) =>
+const unexpectedHttpErr = (endpoint: string, reason: string) =>
   new HttpClientError(
     "Unexpected error when calling the API",
     0,
     { message: reason, errorCode: ErrorCode.GENERIC_ERROR },
+    endpoint,
     true
   );
+
+const backEndConnectionErr = (endpoint: string, reason: string) => {
+  const err = new HttpClientError(
+    "Back end connection issues",
+    0,
+    {
+      message: reason,
+      errorCode: ErrorCode.GENERIC_ERROR,
+    },
+    endpoint
+  );
+
+  err.isBackEndErr = true;
+
+  return err;
+};
 
 export const isHttpClientError = (error: any): error is HttpClientError =>
   error instanceof HttpClientError;
@@ -43,33 +70,47 @@ export const isHttpClientError = (error: any): error is HttpClientError =>
 const basePath = `${window.location.origin}/.netlify/functions`;
 const url = (endpoint: string) => `${basePath}${endpoint}`;
 
+const throwUnexpected = (endpoint: string, err: unknown) => {
+  throw unexpectedHttpErr(
+    endpoint,
+    `Failed to parse json body when calling to ${endpoint}.\nOriginal err msg = ${
+      (err as Error).message
+    }`
+  );
+};
+
 const apiCall = async <R extends object, B extends object>(
   endpoint: string,
   method: HttpVerb,
   body?: B
 ) => {
+  let response: Response;
   try {
-    const response = await fetch(url(endpoint), {
+    response = await fetch(url(endpoint), {
       method,
       body: body ? JSON.stringify(body) : undefined,
     });
+  } catch (err) {
+    return throwUnexpected(endpoint, (err as Error).message);
+  }
 
+  let apiError: ApiError;
+  try {
     if (response.ok) {
-      return response.json() as Promise<R>;
+      return (await response.json()) as Promise<R>;
     }
 
-    throw new HttpClientError(
-      `Failed with ${response.status} when calling to ${method} ${endpoint}`,
-      response.status,
-      await response.json()
-    );
+    apiError = await response.json();
   } catch (err) {
-    throw unexpectedHttpErr(
-      `Failed to parse json body when calling to ${endpoint}.\nOriginal err msg = ${
-        (err as Error).message
-      }`
-    );
+    throw backEndConnectionErr(endpoint, (err as Error).message);
   }
+
+  throw new HttpClientError(
+    `Failed with ${response.status} when calling to ${method} ${endpoint}`,
+    response.status,
+    apiError,
+    endpoint
+  );
 };
 
 export const client = {

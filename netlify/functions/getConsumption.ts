@@ -124,6 +124,10 @@ export const mergeWithPrevIndexVals = (response: GetConsumptionResult) => {
     return response;
   }
 
+  if (!response || !Array.isArray(response)) {
+    return null;
+  }
+
   const [consumption, prevConsumption] = response;
   const consumptionResponse = consumption as Consumption as ConsumptionResponse;
 

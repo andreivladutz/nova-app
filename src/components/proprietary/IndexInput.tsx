@@ -1,11 +1,12 @@
 import React, { Dispatch, SetStateAction } from "react";
 import ReactCodeInput from "react-code-input";
+import { CLIENT_ERR_CODES, ERRORS_LOCALIZED } from "../../utils/CONST";
 import ErrorMessage from "../ErrorMessage";
 
 const INDEX_LEN = 5;
 const ERR_MSG = {
   TOO_SHORT: `Indexul trebuie să aibă ${INDEX_LEN} caractere.`,
-  INDEX_SMALLER: "Indexul nu poate fi mai mic decât ultimul index înregistrat.",
+  INDEX_SMALLER: ERRORS_LOCALIZED[CLIENT_ERR_CODES.CONSUMPTION_INDEX_IS_LOWER],
 };
 
 const zeroPadding = (value: number, length: number) =>

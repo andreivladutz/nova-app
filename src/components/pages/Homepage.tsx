@@ -12,13 +12,15 @@ import useDefaultQueries from "../../hooks/useDefaultQueries";
 import { useAppCtx } from "../../contexts/AppCtxProvider";
 
 import downloadFile from "../../utils/downloadFile";
-import { ROUTES, STYLING } from "../../utils/CONST";
+import { CLIENT_ERR_CODES, ROUTES, STYLING } from "../../utils/CONST";
 import ButtonSkeleton from "../proprietary/skeletons/ButtonSkeleton";
 import SkeletonLoader, {
   SkeletonLoaderProps,
 } from "../proprietary/skeletons/SkeletonLoader";
 import { ButtonProps } from "../Button";
-import ErrorMessage from "../ErrorMessage";
+import AppError from "../proprietary/AppError";
+import apiErrToClientErr from "../../apiConsumer/apiErrToClientErr";
+import { HttpClientError } from "../../apiConsumer/client";
 
 const { SKELETON_PRIMARY_COLOR } = STYLING;
 
@@ -41,14 +43,43 @@ export const makeButtonLoader =
       ),
   });
 
+export const processHomepageErrs = (
+  isBillError: boolean,
+  isUserError: boolean,
+  billError: HttpClientError | null,
+  userError: HttpClientError | null,
+  setAppError: React.Dispatch<React.SetStateAction<CLIENT_ERR_CODES | null>>
+) => {
+  if (isBillError) {
+    return setAppError(apiErrToClientErr(billError));
+  }
+
+  if (isUserError) {
+    return setAppError(apiErrToClientErr(userError));
+  }
+};
+
 export interface HomepageProps extends DefaultHomepageProps {}
 
 function Homepage_(props: HomepageProps, ref: HTMLElementRefOf<"div">) {
   const { navigate } = useAppNavigation();
-  const { userToken } = useAppCtx();
+  const { userToken, appError, setAppError } = useAppCtx();
   const {
-    latestBill: { data, isSuccess },
+    user: { isError: isUserError, error: userError },
+    latestBill: { data, isSuccess, isError: isBillError, error: billError },
   } = useDefaultQueries(userToken);
+
+  React.useEffect(
+    () =>
+      processHomepageErrs(
+        isBillError,
+        isUserError,
+        billError,
+        userError,
+        setAppError
+      ),
+    [billError, isBillError, isUserError, setAppError, userError]
+  );
 
   const isLoading = !isSuccess;
 
@@ -79,13 +110,16 @@ function Homepage_(props: HomepageProps, ref: HTMLElementRefOf<"div">) {
       downloadBillBtn={buttonLoader(() =>
         downloadFile(data!.file, "factura-apanova")
       )}
-      errorMessage={null && <ErrorMessage>Hello World</ErrorMessage>}
+      errorMessage={<AppError>{appError}</AppError>}
       enterIdxBtn={buttonLoader(
         () => navigate(ROUTES.WATER_CONSUMPTION),
         {
           marginTop: "-2rem",
         },
-        SKELETON_PRIMARY_COLOR
+        SKELETON_PRIMARY_COLOR,
+        {
+          isDisabled: isBillError || isUserError,
+        }
       )}
     />
   );
