@@ -17,6 +17,7 @@ import ButtonSkeleton from "../proprietary/skeletons/ButtonSkeleton";
 import SkeletonLoader, {
   SkeletonLoaderProps,
 } from "../proprietary/skeletons/SkeletonLoader";
+import { ButtonProps } from "../Button";
 
 const { SKELETON_PRIMARY_COLOR } = STYLING;
 
@@ -25,7 +26,8 @@ export const makeButtonLoader =
   (
     onClick: () => void,
     skeletonContainerStyle?: React.CSSProperties,
-    skeletonProps?: SkeletonLoaderProps
+    skeletonProps?: SkeletonLoaderProps,
+    extraButtonProps?: ButtonProps
   ) => ({
     // @ts-expect-error
     render: (props, Component) =>
@@ -34,7 +36,7 @@ export const makeButtonLoader =
           <ButtonSkeleton {...skeletonProps} />
         </div>
       ) : (
-        <Component {...props} onClick={onClick} />
+        <Component {...props} {...extraButtonProps} onClick={onClick} />
       ),
   });
 

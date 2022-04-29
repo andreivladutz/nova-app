@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import ReactCodeInput from "react-code-input";
 import ErrorMessage from "../ErrorMessage";
 
@@ -8,21 +8,40 @@ const ERR_MSG = {
   INDEX_SMALLER: "Indexul nu poate fi mai mic decât ultimul index înregistrat.",
 };
 
-const zeros = (length: number) =>
-  Array.from({ length })
-    .map(() => "0")
-    .join("");
+const zeroPadding = (value: number, length: number) =>
+  value.toString().padStart(length, "0");
 
-export const IndexInput = () => {
-  const [indexVal, setIndexVal] = React.useState(zeros(INDEX_LEN));
-  const [isValid, setIsValid] = React.useState(true);
+type Props = {
+  currIndexVal: number;
+  setCurrIndexVal: Dispatch<SetStateAction<number>>;
+
+  isValid: boolean;
+  setIsValid: Dispatch<SetStateAction<boolean>>;
+
+  prevIndexVal: number;
+};
+
+export const IndexInput = ({
+  currIndexVal = 0,
+  setCurrIndexVal = () => {},
+  isValid = true,
+  setIsValid = () => {},
+  prevIndexVal = 0,
+}: Props) => {
   const [errMessages, setErrMessages] = React.useState<string[]>([]);
 
   const onChange = (newIdx: string) => {
-    setIndexVal(newIdx);
+    setCurrIndexVal(parseInt(newIdx));
 
     if (newIdx.length < INDEX_LEN) {
       setErrMessages(Array.from(new Set([...errMessages, ERR_MSG.TOO_SHORT])));
+      return setIsValid(false);
+    }
+
+    if (parseInt(newIdx) < prevIndexVal) {
+      setErrMessages(
+        Array.from(new Set([...errMessages, ERR_MSG.INDEX_SMALLER]))
+      );
       return setIsValid(false);
     }
 
@@ -37,7 +56,7 @@ export const IndexInput = () => {
       <ReactCodeInput
         name="index-input"
         type="number"
-        value={indexVal}
+        value={zeroPadding(currIndexVal, INDEX_LEN)}
         fields={INDEX_LEN}
         inputMode="numeric"
         onChange={onChange}

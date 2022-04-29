@@ -63,20 +63,60 @@ function WaterConsumption_(
   const { total: totalBill, waterConsumption } = latestBill.data || {};
   const pricePerCubeM = ((totalBill || 1) / (waterConsumption || 1)).toFixed(2);
 
-  // TODO: Add state for each IndexInput
+  const [stateWC, setStateWC] = React.useState(indexWC);
+  const [isValidWC, setIsValidWC] = React.useState(true);
+
+  const [stateBathroom, setStateBathroom] = React.useState(indexBathroom);
+  const [isValidBathroom, setIsValidBathroom] = React.useState(true);
+
+  const [stateKitchen, setStateKitchen] = React.useState(indexKitchen);
+  const [isValidKitchen, setIsValidKitchen] = React.useState(true);
+
+  React.useEffect(() => {
+    if (indexWC !== undefined) {
+      setStateWC(indexWC);
+    }
+    if (indexBathroom !== undefined) {
+      setStateBathroom(indexBathroom);
+    }
+    if (indexKitchen !== undefined) {
+      setStateKitchen(indexKitchen);
+    }
+  }, [indexWC, indexBathroom, indexKitchen]);
+
+  // TODO : Remove this
+  const [hasUpdated, setHasUpdated] = React.useState(false);
 
   const consumptionValues = [
     {
       name: "WC",
       oldIndex: prevIndexWC,
+
+      state: stateWC,
+      setState: setStateWC,
+
+      isValid: isValidWC,
+      setIsValid: setIsValidWC,
     },
     {
       name: "Baie",
       oldIndex: prevIndexBathroom,
+
+      state: stateBathroom,
+      setState: setStateBathroom,
+
+      isValid: isValidBathroom,
+      setIsValid: setIsValidBathroom,
     },
     {
       name: "Bucătărie",
       oldIndex: prevIndexKitchen,
+
+      state: stateKitchen,
+      setState: setStateKitchen,
+
+      isValid: isValidKitchen,
+      setIsValid: setIsValidKitchen,
     },
   ] as const;
 
@@ -91,15 +131,35 @@ function WaterConsumption_(
       }}
       consumptionIndexCard={{
         render: () =>
-          consumptionValues.map(({ name, oldIndex }, elIdx) => (
-            <ConsumptionIndexCard
-              key={`consumption-card-${elIdx}`}
-              isLoading={isLoading}
-              consumptionPlace={name}
-              consumptionIndex={` ${oldIndex}`}
-              digitsInput={<IndexInput key={`digitsInput-${elIdx}`} />}
-            />
-          )),
+          consumptionValues.map(
+            (
+              { name, oldIndex, state, setState, isValid, setIsValid },
+              elIdx
+            ) => (
+              <ConsumptionIndexCard
+                key={`consumption-card-${elIdx}`}
+                nth={elIdx}
+                isLoading={isLoading}
+                consumptionPlace={name}
+                consumptionIndex={` ${oldIndex}`}
+                digitsInput={
+                  state !== undefined &&
+                  oldIndex !== undefined && (
+                    <IndexInput
+                      key={`digitsInput-${elIdx}`}
+                      currIndexVal={state}
+                      setCurrIndexVal={
+                        setState as React.Dispatch<React.SetStateAction<number>>
+                      }
+                      isValid={isValid}
+                      setIsValid={setIsValid}
+                      prevIndexVal={oldIndex}
+                    />
+                  )
+                }
+              />
+            )
+          ),
       }}
       title={componentLoader(
         "title",
@@ -115,10 +175,13 @@ function WaterConsumption_(
       )}
       enterIdxBtn={buttonLoader(
         () => {
-          console.log("SABING");
+          setHasUpdated(true);
         },
         {},
-        SKELETON_PRIMARY_COLOR
+        SKELETON_PRIMARY_COLOR,
+        {
+          isLoading: hasUpdated,
+        }
       )}
       totalText={`${total} LEI`}
       waterConsumption={`${consumptionCubeM} m³`}

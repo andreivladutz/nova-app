@@ -1,18 +1,31 @@
 import * as React from "react";
 import {
   PlasmicButton,
-  DefaultButtonProps
+  DefaultButtonProps,
 } from "./plasmic/apa_nova_app/PlasmicButton";
 import {
   ButtonRef,
   HtmlAnchorOnlyProps,
-  HtmlButtonOnlyProps
+  HtmlButtonOnlyProps,
 } from "@plasmicapp/react-web";
+import Spinner from "./proprietary/loaders/Spinner";
 
-interface ButtonProps extends DefaultButtonProps {}
+export interface ButtonProps extends DefaultButtonProps {
+  isLoading?: boolean;
+}
 
-function Button_(props: ButtonProps, ref: ButtonRef) {
+function Button_({ isLoading, ...props }: ButtonProps, ref: ButtonRef) {
   const { plasmicProps } = PlasmicButton.useBehavior<ButtonProps>(props, ref);
+
+  plasmicProps.overrides.contentContainer = {
+    render: (props, Component) => (
+      <>
+        {isLoading && <Spinner />}
+        <Component {...props} />
+      </>
+    ),
+  };
+
   return <PlasmicButton {...plasmicProps} />;
 }
 
@@ -32,5 +45,5 @@ type ButtonComponentType = {
 const Button = React.forwardRef(Button_) as any as ButtonComponentType;
 
 export default Object.assign(Button, {
-  __plumeType: "button"
+  __plumeType: "button",
 });
