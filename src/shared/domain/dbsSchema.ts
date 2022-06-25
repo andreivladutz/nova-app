@@ -27,7 +27,14 @@ export type Bill = {
   name: string;
   dateEmitted: string;
   dueDate: string;
+
+  existingBalance: number;
+  /* 
+    The bill total 
+    where the payment total is total + existingBalance
+  */
   total: number;
+
   penalties: number;
   file: string;
   billId: number;
@@ -66,7 +73,10 @@ export const billKeys = keysArrayToMap<Bill>([
   "name",
   "dateEmitted",
   "dueDate",
+
   "total",
+  "existingBalance",
+
   "penalties",
   "file",
   "billId",

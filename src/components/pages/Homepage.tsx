@@ -84,6 +84,8 @@ function Homepage_(props: HomepageProps, ref: HTMLElementRefOf<"div">) {
   );
 
   const isLoading = !isSuccess;
+  const hasBalance = !!data?.existingBalance;
+  const isShowingBalance = !isLoading && hasBalance;
 
   const conditionedRender = (flag: boolean, trueFlagNode: React.ReactNode) => ({
     // @ts-expect-error
@@ -107,15 +109,18 @@ function Homepage_(props: HomepageProps, ref: HTMLElementRefOf<"div">) {
       {...props}
       /* Fill in data slots */
       emittedDate={data?.dateEmitted}
-      existingBalance={formatMetric(-20, UnitType.Ron)}
-      totalBill={formatMetric(200, UnitType.Ron)}
-      totalPayment={formatMetric(data?.total, UnitType.Ron)}
+      existingBalance={formatMetric(data?.existingBalance, UnitType.Ron)}
+      totalBill={formatMetric(data?.total, UnitType.Ron)}
+      totalPayment={formatMetric(
+        (data?.total || 0) + (data?.existingBalance || 0),
+        UnitType.Ron
+      )}
       waterConsumption={formatMetric(data?.waterConsumption, UnitType.CubeM)}
       dueDate={data?.dueDate}
       /* The IconRow components containing the data slots */
       issueDateRow={componentLoader}
-      balanceRow={componentHideIf(true)}
-      totalBillRow={componentHideIf(true)}
+      balanceRow={componentHideIf(!isShowingBalance)}
+      totalBillRow={componentHideIf(!isShowingBalance)}
       paymentRow={componentLoader}
       totalConsumptionRow={componentLoader}
       dueDateRow={componentLoader}
