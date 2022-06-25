@@ -6,7 +6,13 @@ import {
   DefaultWaterConsumptionProps,
 } from "../plasmic/apa_nova_app/PlasmicWaterConsumption";
 import { HTMLElementRefOf } from "@plasmicapp/react-web";
-import { CLIENT_ERR_CODES, ROUTES, STYLING } from "../../utils/CONST";
+import {
+  CLIENT_ERR_CODES,
+  ROUTES,
+  STYLING,
+  UNITS_LOCALIZED,
+  UnitType,
+} from "../../utils/CONST";
 import useAppNavigation from "../../hooks/useAppNavigation";
 import { IndexInput } from "../proprietary/IndexInput";
 import useDefaultQueries from "../../hooks/useDefaultQueries";
@@ -19,6 +25,7 @@ import { makeButtonLoader, processHomepageErrs } from "./Homepage";
 import useUpdateConsumption from "../../hooks/useUpdateConsumption";
 import AppError from "../proprietary/AppError";
 import apiErrToClientErr from "../../apiConsumer/apiErrToClientErr";
+import { formatMetric } from "../../utils/format";
 
 const { SKELETON_PRIMARY_COLOR } = STYLING;
 const { MISSING_USER_TOKEN, INVALID_USER_TOKEN } = CLIENT_ERR_CODES;
@@ -245,9 +252,14 @@ function WaterConsumption_(
           isDisabled: !valuesAreValid,
         }
       )}
-      totalText={`${(total || 0).toFixed(2)} LEI`}
-      waterConsumption={`${consumptionCubeM || 0} m³`}
-      priceBreakdown={`${pricePerCubeM} lei / m³ = ${totalBill} lei / ${waterConsumption} m³`}
+      totalText={formatMetric(total || 0, UnitType.Ron)?.toUpperCase()}
+      waterConsumption={formatMetric(consumptionCubeM || 0, UnitType.CubeM)}
+      priceBreakdown={`${pricePerCubeM} ${UNITS_LOCALIZED[UnitType.Ron]} / ${
+        UNITS_LOCALIZED[UnitType.CubeM]
+      } = ${formatMetric(totalBill, UnitType.Ron)} / ${formatMetric(
+        waterConsumption,
+        UnitType.CubeM
+      )}`}
       totalBreakdown={{
         render: (props, Component) =>
           !isLoading && hasUpdated && <Component {...props} />,
