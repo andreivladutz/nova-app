@@ -226,6 +226,16 @@
           "id": "SSfu3dAQF",
           "name": "WarningsvgIcon",
           "moduleFilePath": "plasmic/apa_nova_app/icons/PlasmicIcon__Warningsvg.tsx"
+        },
+        {
+          "id": "6JTeMSQo_",
+          "name": "AbacusIcon",
+          "moduleFilePath": "plasmic/apa_nova_app/icons/PlasmicIcon__Abacus.tsx"
+        },
+        {
+          "id": "HbrrSJ-QT",
+          "name": "BalanceIcon",
+          "moduleFilePath": "plasmic/apa_nova_app/icons/PlasmicIcon__Balance.tsx"
         }
       ],
       "images": [],
@@ -251,6 +261,6 @@
     ]
   },
   "wrapPagesWithGlobalContexts": true,
-  "cliVersion": "0.1.178",
-  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.178/dist/plasmic.schema.json"
+  "cliVersion": "0.1.182",
+  "$schema": "https://unpkg.com/@plasmicapp/cli@0.1.182/dist/plasmic.schema.json"
 }

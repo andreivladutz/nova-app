@@ -63,6 +63,9 @@ export interface DefaultErrorMessageProps {
   className?: string;
 }
 
+export const defaultErrorMessage__Args: Partial<PlasmicErrorMessage__ArgsType> =
+  {};
+
 function PlasmicErrorMessage__RenderFunc(props: {
   variants: PlasmicErrorMessage__VariantsArgs;
   args: PlasmicErrorMessage__ArgsType;
@@ -70,8 +73,10 @@ function PlasmicErrorMessage__RenderFunc(props: {
 
   forNode?: string;
 }) {
-  const { variants, args, overrides, forNode } = props;
-  const $props = props.args;
+  const { variants, overrides, forNode } = props;
+  const args = Object.assign({}, defaultErrorMessage__Args, props.args);
+  const $props = args;
+  const $ctx = ph.useDataEnv?.() || {};
 
   return (
     true ? (

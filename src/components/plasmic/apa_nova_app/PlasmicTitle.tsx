@@ -73,6 +73,8 @@ export interface DefaultTitleProps {
   className?: string;
 }
 
+export const defaultTitle__Args: Partial<PlasmicTitle__ArgsType> = {};
+
 function PlasmicTitle__RenderFunc(props: {
   variants: PlasmicTitle__VariantsArgs;
   args: PlasmicTitle__ArgsType;
@@ -80,8 +82,10 @@ function PlasmicTitle__RenderFunc(props: {
 
   forNode?: string;
 }) {
-  const { variants, args, overrides, forNode } = props;
-  const $props = props.args;
+  const { variants, overrides, forNode } = props;
+  const args = Object.assign({}, defaultTitle__Args, props.args);
+  const $props = args;
+  const $ctx = ph.useDataEnv?.() || {};
 
   return (
     <div

@@ -90,6 +90,8 @@ export interface DefaultPageProps {
   className?: string;
 }
 
+export const defaultPage__Args: Partial<PlasmicPage__ArgsType> = {};
+
 function PlasmicPage__RenderFunc(props: {
   variants: PlasmicPage__VariantsArgs;
   args: PlasmicPage__ArgsType;
@@ -97,8 +99,10 @@ function PlasmicPage__RenderFunc(props: {
 
   forNode?: string;
 }) {
-  const { variants, args, overrides, forNode } = props;
-  const $props = props.args;
+  const { variants, overrides, forNode } = props;
+  const args = Object.assign({}, defaultPage__Args, props.args);
+  const $props = args;
+  const $ctx = ph.useDataEnv?.() || {};
 
   return (
     <p.Stack

@@ -76,6 +76,9 @@ export interface DefaultConsumptionIndexCardProps {
   className?: string;
 }
 
+export const defaultConsumptionIndexCard__Args: Partial<PlasmicConsumptionIndexCard__ArgsType> =
+  {};
+
 function PlasmicConsumptionIndexCard__RenderFunc(props: {
   variants: PlasmicConsumptionIndexCard__VariantsArgs;
   args: PlasmicConsumptionIndexCard__ArgsType;
@@ -83,8 +86,10 @@ function PlasmicConsumptionIndexCard__RenderFunc(props: {
 
   forNode?: string;
 }) {
-  const { variants, args, overrides, forNode } = props;
-  const $props = props.args;
+  const { variants, overrides, forNode } = props;
+  const args = Object.assign({}, defaultConsumptionIndexCard__Args, props.args);
+  const $props = args;
+  const $ctx = ph.useDataEnv?.() || {};
 
   return (
     <CardWall

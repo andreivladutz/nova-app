@@ -95,6 +95,9 @@ export interface DefaultWaterConsumptionProps {
   className?: string;
 }
 
+export const defaultWaterConsumption__Args: Partial<PlasmicWaterConsumption__ArgsType> =
+  {};
+
 function PlasmicWaterConsumption__RenderFunc(props: {
   variants: PlasmicWaterConsumption__VariantsArgs;
   args: PlasmicWaterConsumption__ArgsType;
@@ -102,8 +105,10 @@ function PlasmicWaterConsumption__RenderFunc(props: {
 
   forNode?: string;
 }) {
-  const { variants, args, overrides, forNode } = props;
-  const $props = props.args;
+  const { variants, overrides, forNode } = props;
+  const args = Object.assign({}, defaultWaterConsumption__Args, props.args);
+  const $props = args;
+  const $ctx = ph.useDataEnv?.() || {};
 
   return (
     <React.Fragment>

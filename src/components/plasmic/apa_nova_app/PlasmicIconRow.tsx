@@ -90,6 +90,8 @@ export interface DefaultIconRowProps {
   className?: string;
 }
 
+export const defaultIconRow__Args: Partial<PlasmicIconRow__ArgsType> = {};
+
 function PlasmicIconRow__RenderFunc(props: {
   variants: PlasmicIconRow__VariantsArgs;
   args: PlasmicIconRow__ArgsType;
@@ -97,8 +99,10 @@ function PlasmicIconRow__RenderFunc(props: {
 
   forNode?: string;
 }) {
-  const { variants, args, overrides, forNode } = props;
-  const $props = props.args;
+  const { variants, overrides, forNode } = props;
+  const args = Object.assign({}, defaultIconRow__Args, props.args);
+  const $props = args;
+  const $ctx = ph.useDataEnv?.() || {};
 
   return (
     <div

@@ -12,7 +12,7 @@ import useDefaultQueries from "../../hooks/useDefaultQueries";
 import { useAppCtx } from "../../contexts/AppCtxProvider";
 
 import downloadFile from "../../utils/downloadFile";
-import { CLIENT_ERR_CODES, ROUTES, STYLING } from "../../utils/CONST";
+import { CLIENT_ERR_CODES, ROUTES, STYLING, UnitType } from "../../utils/CONST";
 import ButtonSkeleton from "../proprietary/skeletons/ButtonSkeleton";
 import SkeletonLoader, {
   SkeletonLoaderProps,
@@ -21,6 +21,7 @@ import { ButtonProps } from "../Button";
 import AppError from "../proprietary/AppError";
 import apiErrToClientErr from "../../apiConsumer/apiErrToClientErr";
 import { HttpClientError } from "../../apiConsumer/client";
+import { formatMetric } from "../../utils/format";
 
 const { SKELETON_PRIMARY_COLOR } = STYLING;
 const { MISSING_USER_TOKEN, INVALID_USER_TOKEN } = CLIENT_ERR_CODES;
@@ -84,15 +85,19 @@ function Homepage_(props: HomepageProps, ref: HTMLElementRefOf<"div">) {
 
   const isLoading = !isSuccess;
 
-  const componentLoader = {
+  const conditionedRender = (flag: boolean, trueFlagNode: React.ReactNode) => ({
     // @ts-expect-error
     render: (props, Component) =>
-      isLoading ? (
-        <SkeletonLoader style={{ marginBottom: "0.25rem" }} />
-      ) : (
-        <Component {...props} />
-      ),
-  };
+      flag ? trueFlagNode : <Component {...props} />,
+  });
+
+  const componentLoader = conditionedRender(
+    isLoading,
+    <SkeletonLoader style={{ marginBottom: "0.25rem" }} />
+  );
+
+  const componentHideIf = (condition: boolean) =>
+    conditionedRender(condition, null);
 
   const buttonLoader = makeButtonLoader(isLoading);
 
@@ -100,11 +105,17 @@ function Homepage_(props: HomepageProps, ref: HTMLElementRefOf<"div">) {
     <PlasmicHomepage
       root={{ ref }}
       {...props}
+      /* Fill in data slots */
       emittedDate={data?.dateEmitted}
-      total={data?.total}
-      waterConsumption={data?.waterConsumption}
+      existingBalance={formatMetric(-20, UnitType.Ron)}
+      totalBill={formatMetric(200, UnitType.Ron)}
+      totalPayment={formatMetric(data?.total, UnitType.Ron)}
+      waterConsumption={formatMetric(data?.waterConsumption, UnitType.CubeM)}
       dueDate={data?.dueDate}
+      /* The IconRow components containing the data slots */
       issueDateRow={componentLoader}
+      balanceRow={componentHideIf(true)}
+      totalBillRow={componentHideIf(true)}
       paymentRow={componentLoader}
       totalConsumptionRow={componentLoader}
       dueDateRow={componentLoader}

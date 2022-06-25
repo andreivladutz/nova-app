@@ -5,9 +5,9 @@
   "dependencies": {
     "@netlify/functions": "^1.0.0",
     "@notionhq/client": "^1.0.4",
-    "@plasmicapp/cli": "^0.1.178",
-    "@plasmicapp/host": "^1.0.29",
-    "@plasmicapp/react-web": "^0.2.95",
+    "@plasmicapp/cli": "^0.1.182",
+    "@plasmicapp/host": "^1.0.64",
+    "@plasmicapp/react-web": "^0.2.100",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",

@@ -99,6 +99,8 @@ export interface DefaultCardWallProps {
   className?: string;
 }
 
+export const defaultCardWall__Args: Partial<PlasmicCardWall__ArgsType> = {};
+
 function PlasmicCardWall__RenderFunc(props: {
   variants: PlasmicCardWall__VariantsArgs;
   args: PlasmicCardWall__ArgsType;
@@ -106,8 +108,10 @@ function PlasmicCardWall__RenderFunc(props: {
 
   forNode?: string;
 }) {
-  const { variants, args, overrides, forNode } = props;
-  const $props = props.args;
+  const { variants, overrides, forNode } = props;
+  const args = Object.assign({}, defaultCardWall__Args, props.args);
+  const $props = args;
+  const $ctx = ph.useDataEnv?.() || {};
 
   return (
     <div

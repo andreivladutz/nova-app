@@ -69,6 +69,16 @@ export const ERRORS_LOCALIZED = {
     "Nu se poate contacta server-ul. Sigur aveți conexiune la internet?",
 } as const;
 
+export enum UnitType {
+  CubeM = "CubeM",
+  Ron = "Ron",
+}
+
+export const UNITS_LOCALIZED = {
+  [UnitType.CubeM]: "m³",
+  [UnitType.Ron]: "lei",
+} as const;
+
 export const STYLING = {
   SKELETONS: {
     BASE_COLOR: "var(--plasmic-token-base-color)",

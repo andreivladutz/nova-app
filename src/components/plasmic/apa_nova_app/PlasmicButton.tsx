@@ -141,6 +141,8 @@ export interface DefaultButtonProps extends pp.BaseButtonProps {
   btnType?: SingleChoiceArg<"primary" | "secondary">;
 }
 
+export const defaultButton__Args: Partial<PlasmicButton__ArgsType> = {};
+
 function PlasmicButton__RenderFunc(props: {
   variants: PlasmicButton__VariantsArgs;
   args: PlasmicButton__ArgsType;
@@ -148,8 +150,10 @@ function PlasmicButton__RenderFunc(props: {
 
   forNode?: string;
 }) {
-  const { variants, args, overrides, forNode } = props;
-  const $props = props.args;
+  const { variants, overrides, forNode } = props;
+  const args = Object.assign({}, defaultButton__Args, props.args);
+  const $props = args;
+  const $ctx = ph.useDataEnv?.() || {};
 
   const [isRootFocusVisibleWithin, triggerRootFocusVisibleWithinProps] =
     useTrigger("useFocusVisibleWithin", {

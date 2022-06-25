@@ -141,6 +141,9 @@ export interface DefaultSecondaryButtonProps extends pp.BaseButtonProps {
   btnType?: SingleChoiceArg<"primary" | "secondary">;
 }
 
+export const defaultSecondaryButton__Args: Partial<PlasmicSecondaryButton__ArgsType> =
+  {};
+
 function PlasmicSecondaryButton__RenderFunc(props: {
   variants: PlasmicSecondaryButton__VariantsArgs;
   args: PlasmicSecondaryButton__ArgsType;
@@ -148,8 +151,10 @@ function PlasmicSecondaryButton__RenderFunc(props: {
 
   forNode?: string;
 }) {
-  const { variants, args, overrides, forNode } = props;
-  const $props = props.args;
+  const { variants, overrides, forNode } = props;
+  const args = Object.assign({}, defaultSecondaryButton__Args, props.args);
+  const $props = args;
+  const $ctx = ph.useDataEnv?.() || {};
 
   const [isRootFocusVisibleWithin, triggerRootFocusVisibleWithinProps] =
     useTrigger("useFocusVisibleWithin", {
