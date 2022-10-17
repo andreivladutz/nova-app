@@ -76,9 +76,6 @@ export interface DefaultConsumptionIndexCardProps {
   className?: string;
 }
 
-export const defaultConsumptionIndexCard__Args: Partial<PlasmicConsumptionIndexCard__ArgsType> =
-  {};
-
 function PlasmicConsumptionIndexCard__RenderFunc(props: {
   variants: PlasmicConsumptionIndexCard__VariantsArgs;
   args: PlasmicConsumptionIndexCard__ArgsType;
@@ -87,9 +84,22 @@ function PlasmicConsumptionIndexCard__RenderFunc(props: {
   forNode?: string;
 }) {
   const { variants, overrides, forNode } = props;
-  const args = Object.assign({}, defaultConsumptionIndexCard__Args, props.args);
-  const $props = args;
+
   const $ctx = ph.useDataEnv?.() || {};
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+
+        props.args
+      ),
+    [props.args]
+  );
+
+  const $props = {
+    ...args,
+    ...variants,
+  };
 
   return (
     <CardWall
@@ -206,12 +216,16 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
   const func = function <T extends PropsType>(
     props: T & StrictProps<T, PropsType>
   ) {
-    const { variants, args, overrides } = deriveRenderOpts(props, {
-      name: nodeName,
-      descendantNames: [...PlasmicDescendants[nodeName]],
-      internalArgPropNames: PlasmicConsumptionIndexCard__ArgProps,
-      internalVariantPropNames: PlasmicConsumptionIndexCard__VariantProps,
-    });
+    const { variants, args, overrides } = React.useMemo(
+      () =>
+        deriveRenderOpts(props, {
+          name: nodeName,
+          descendantNames: [...PlasmicDescendants[nodeName]],
+          internalArgPropNames: PlasmicConsumptionIndexCard__ArgProps,
+          internalVariantPropNames: PlasmicConsumptionIndexCard__VariantProps,
+        }),
+      [props, nodeName]
+    );
 
     return PlasmicConsumptionIndexCard__RenderFunc({
       variants,

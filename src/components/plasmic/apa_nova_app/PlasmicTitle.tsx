@@ -73,8 +73,6 @@ export interface DefaultTitleProps {
   className?: string;
 }
 
-export const defaultTitle__Args: Partial<PlasmicTitle__ArgsType> = {};
-
 function PlasmicTitle__RenderFunc(props: {
   variants: PlasmicTitle__VariantsArgs;
   args: PlasmicTitle__ArgsType;
@@ -83,9 +81,22 @@ function PlasmicTitle__RenderFunc(props: {
   forNode?: string;
 }) {
   const { variants, overrides, forNode } = props;
-  const args = Object.assign({}, defaultTitle__Args, props.args);
-  const $props = args;
+
   const $ctx = ph.useDataEnv?.() || {};
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+
+        props.args
+      ),
+    [props.args]
+  );
+
+  const $props = {
+    ...args,
+    ...variants
+  };
 
   return (
     <div
@@ -178,12 +189,16 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
   const func = function <T extends PropsType>(
     props: T & StrictProps<T, PropsType>
   ) {
-    const { variants, args, overrides } = deriveRenderOpts(props, {
-      name: nodeName,
-      descendantNames: [...PlasmicDescendants[nodeName]],
-      internalArgPropNames: PlasmicTitle__ArgProps,
-      internalVariantPropNames: PlasmicTitle__VariantProps
-    });
+    const { variants, args, overrides } = React.useMemo(
+      () =>
+        deriveRenderOpts(props, {
+          name: nodeName,
+          descendantNames: [...PlasmicDescendants[nodeName]],
+          internalArgPropNames: PlasmicTitle__ArgProps,
+          internalVariantPropNames: PlasmicTitle__VariantProps
+        }),
+      [props, nodeName]
+    );
 
     return PlasmicTitle__RenderFunc({
       variants,

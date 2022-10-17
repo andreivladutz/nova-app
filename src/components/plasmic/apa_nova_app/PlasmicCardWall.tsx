@@ -99,8 +99,6 @@ export interface DefaultCardWallProps {
   className?: string;
 }
 
-export const defaultCardWall__Args: Partial<PlasmicCardWall__ArgsType> = {};
-
 function PlasmicCardWall__RenderFunc(props: {
   variants: PlasmicCardWall__VariantsArgs;
   args: PlasmicCardWall__ArgsType;
@@ -109,9 +107,22 @@ function PlasmicCardWall__RenderFunc(props: {
   forNode?: string;
 }) {
   const { variants, overrides, forNode } = props;
-  const args = Object.assign({}, defaultCardWall__Args, props.args);
-  const $props = args;
+
   const $ctx = ph.useDataEnv?.() || {};
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+
+        props.args
+      ),
+    [props.args]
+  );
+
+  const $props = {
+    ...args,
+    ...variants
+  };
 
   return (
     <div
@@ -319,12 +330,16 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
   const func = function <T extends PropsType>(
     props: T & StrictProps<T, PropsType>
   ) {
-    const { variants, args, overrides } = deriveRenderOpts(props, {
-      name: nodeName,
-      descendantNames: [...PlasmicDescendants[nodeName]],
-      internalArgPropNames: PlasmicCardWall__ArgProps,
-      internalVariantPropNames: PlasmicCardWall__VariantProps
-    });
+    const { variants, args, overrides } = React.useMemo(
+      () =>
+        deriveRenderOpts(props, {
+          name: nodeName,
+          descendantNames: [...PlasmicDescendants[nodeName]],
+          internalArgPropNames: PlasmicCardWall__ArgProps,
+          internalVariantPropNames: PlasmicCardWall__VariantProps
+        }),
+      [props, nodeName]
+    );
 
     return PlasmicCardWall__RenderFunc({
       variants,

@@ -12,6 +12,7 @@ import {
   Consumption,
   ErrorCode,
   UpdateConsumptionResponse,
+  User,
 } from "../utils/sharedDomain";
 import { createDbWrapper } from "../utils/notionApiWrappers";
 import notionCreds from "../utils/notionCreds";
@@ -39,9 +40,10 @@ const updateConsumption = async (updateBody: UpdateConsumptionBody) => {
 
   // The getting of the consumption might fail if the user is not found
   // or if the consumption itself is not found (we do not create one instead)
-  const [consumptionObj, prevIndexVals] = consumptionResult as readonly [
+  const [consumptionObj, prevIndexVals, user] = consumptionResult as readonly [
     (Consumption & NotionAcessPrototype) | null,
-    PrevIndexVals
+    PrevIndexVals,
+    User
   ];
   if (!consumptionObj) {
     return null;
@@ -85,8 +87,12 @@ const updateConsumption = async (updateBody: UpdateConsumptionBody) => {
     return ErrorCode.CONSUMPTION_INDEX_IS_LOWER;
   }
 
-  const { total, waterConsumption } = latestBill;
-  const pricePerCubeM = total / waterConsumption;
+  const { total, waterConsumption, existingBalance } = latestBill;
+  // Only if needed, the cubeM price will be based on the whole bill total
+  const totalBillPrice = user?.usesFullBillPrice
+    ? total + existingBalance
+    : total;
+  const pricePerCubeM = totalBillPrice / waterConsumption;
   const consumptionCubeM = deltaBathroom + deltaKitchen + deltaWC;
 
   consumptionObj.indexBathroom = indexBathroom;
@@ -110,6 +116,7 @@ const updateConsumption = async (updateBody: UpdateConsumptionBody) => {
   const mergedUpdated = mergeWithPrevIndexVals([
     updatedConsumption,
     prevIndexVals,
+    user,
   ]) as Consumption as UpdateConsumptionResponse;
 
   mergedUpdated.pricePerCubeM = pricePerCubeM;

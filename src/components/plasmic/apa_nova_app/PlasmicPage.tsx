@@ -90,8 +90,6 @@ export interface DefaultPageProps {
   className?: string;
 }
 
-export const defaultPage__Args: Partial<PlasmicPage__ArgsType> = {};
-
 function PlasmicPage__RenderFunc(props: {
   variants: PlasmicPage__VariantsArgs;
   args: PlasmicPage__ArgsType;
@@ -100,9 +98,22 @@ function PlasmicPage__RenderFunc(props: {
   forNode?: string;
 }) {
   const { variants, overrides, forNode } = props;
-  const args = Object.assign({}, defaultPage__Args, props.args);
-  const $props = args;
+
   const $ctx = ph.useDataEnv?.() || {};
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+
+        props.args
+      ),
+    [props.args]
+  );
+
+  const $props = {
+    ...args,
+    ...variants
+  };
 
   return (
     <p.Stack
@@ -305,12 +316,16 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
   const func = function <T extends PropsType>(
     props: T & StrictProps<T, PropsType>
   ) {
-    const { variants, args, overrides } = deriveRenderOpts(props, {
-      name: nodeName,
-      descendantNames: [...PlasmicDescendants[nodeName]],
-      internalArgPropNames: PlasmicPage__ArgProps,
-      internalVariantPropNames: PlasmicPage__VariantProps
-    });
+    const { variants, args, overrides } = React.useMemo(
+      () =>
+        deriveRenderOpts(props, {
+          name: nodeName,
+          descendantNames: [...PlasmicDescendants[nodeName]],
+          internalArgPropNames: PlasmicPage__ArgProps,
+          internalVariantPropNames: PlasmicPage__VariantProps
+        }),
+      [props, nodeName]
+    );
 
     return PlasmicPage__RenderFunc({
       variants,

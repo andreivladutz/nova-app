@@ -21,6 +21,7 @@ export type User = {
   token: string;
   apartmentNo: number;
   url: string;
+  usesFullBillPrice: boolean;
 };
 
 export type Bill = {
@@ -67,6 +68,7 @@ export const userKeys = keysArrayToMap<User>([
   "apartmentNo",
   "token",
   "url",
+  "usesFullBillPrice",
 ] as const);
 
 export const billKeys = keysArrayToMap<Bill>([

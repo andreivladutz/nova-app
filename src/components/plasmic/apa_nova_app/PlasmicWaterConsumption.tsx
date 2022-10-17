@@ -95,9 +95,6 @@ export interface DefaultWaterConsumptionProps {
   className?: string;
 }
 
-export const defaultWaterConsumption__Args: Partial<PlasmicWaterConsumption__ArgsType> =
-  {};
-
 function PlasmicWaterConsumption__RenderFunc(props: {
   variants: PlasmicWaterConsumption__VariantsArgs;
   args: PlasmicWaterConsumption__ArgsType;
@@ -106,13 +103,25 @@ function PlasmicWaterConsumption__RenderFunc(props: {
   forNode?: string;
 }) {
   const { variants, overrides, forNode } = props;
-  const args = Object.assign({}, defaultWaterConsumption__Args, props.args);
-  const $props = args;
+
   const $ctx = ph.useDataEnv?.() || {};
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+
+        props.args
+      ),
+    [props.args]
+  );
+
+  const $props = {
+    ...args,
+    ...variants
+  };
 
   return (
     <React.Fragment>
-      {}
       {}
 
       <div className={projectcss.plasmic_page_wrapper}>
@@ -389,12 +398,16 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
   const func = function <T extends PropsType>(
     props: T & StrictProps<T, PropsType>
   ) {
-    const { variants, args, overrides } = deriveRenderOpts(props, {
-      name: nodeName,
-      descendantNames: [...PlasmicDescendants[nodeName]],
-      internalArgPropNames: PlasmicWaterConsumption__ArgProps,
-      internalVariantPropNames: PlasmicWaterConsumption__VariantProps
-    });
+    const { variants, args, overrides } = React.useMemo(
+      () =>
+        deriveRenderOpts(props, {
+          name: nodeName,
+          descendantNames: [...PlasmicDescendants[nodeName]],
+          internalArgPropNames: PlasmicWaterConsumption__ArgProps,
+          internalVariantPropNames: PlasmicWaterConsumption__VariantProps
+        }),
+      [props, nodeName]
+    );
 
     return PlasmicWaterConsumption__RenderFunc({
       variants,
@@ -426,7 +439,15 @@ export const PlasmicWaterConsumption = Object.assign(
 
     // Metadata about props expected for PlasmicWaterConsumption
     internalVariantProps: PlasmicWaterConsumption__VariantProps,
-    internalArgProps: PlasmicWaterConsumption__ArgProps
+    internalArgProps: PlasmicWaterConsumption__ArgProps,
+
+    // Page metadata
+    pageMetadata: {
+      title: "",
+      description: "",
+      ogImageSrc: "",
+      canonical: ""
+    }
   }
 );
 

@@ -90,8 +90,6 @@ export interface DefaultIconRowProps {
   className?: string;
 }
 
-export const defaultIconRow__Args: Partial<PlasmicIconRow__ArgsType> = {};
-
 function PlasmicIconRow__RenderFunc(props: {
   variants: PlasmicIconRow__VariantsArgs;
   args: PlasmicIconRow__ArgsType;
@@ -100,9 +98,22 @@ function PlasmicIconRow__RenderFunc(props: {
   forNode?: string;
 }) {
   const { variants, overrides, forNode } = props;
-  const args = Object.assign({}, defaultIconRow__Args, props.args);
-  const $props = args;
+
   const $ctx = ph.useDataEnv?.() || {};
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+
+        props.args
+      ),
+    [props.args]
+  );
+
+  const $props = {
+    ...args,
+    ...variants
+  };
 
   return (
     <div
@@ -290,12 +301,16 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
   const func = function <T extends PropsType>(
     props: T & StrictProps<T, PropsType>
   ) {
-    const { variants, args, overrides } = deriveRenderOpts(props, {
-      name: nodeName,
-      descendantNames: [...PlasmicDescendants[nodeName]],
-      internalArgPropNames: PlasmicIconRow__ArgProps,
-      internalVariantPropNames: PlasmicIconRow__VariantProps
-    });
+    const { variants, args, overrides } = React.useMemo(
+      () =>
+        deriveRenderOpts(props, {
+          name: nodeName,
+          descendantNames: [...PlasmicDescendants[nodeName]],
+          internalArgPropNames: PlasmicIconRow__ArgProps,
+          internalVariantPropNames: PlasmicIconRow__VariantProps
+        }),
+      [props, nodeName]
+    );
 
     return PlasmicIconRow__RenderFunc({
       variants,

@@ -141,9 +141,6 @@ export interface DefaultSecondaryButtonProps extends pp.BaseButtonProps {
   btnType?: SingleChoiceArg<"primary" | "secondary">;
 }
 
-export const defaultSecondaryButton__Args: Partial<PlasmicSecondaryButton__ArgsType> =
-  {};
-
 function PlasmicSecondaryButton__RenderFunc(props: {
   variants: PlasmicSecondaryButton__VariantsArgs;
   args: PlasmicSecondaryButton__ArgsType;
@@ -152,9 +149,22 @@ function PlasmicSecondaryButton__RenderFunc(props: {
   forNode?: string;
 }) {
   const { variants, overrides, forNode } = props;
-  const args = Object.assign({}, defaultSecondaryButton__Args, props.args);
-  const $props = args;
+
   const $ctx = ph.useDataEnv?.() || {};
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+
+        props.args
+      ),
+    [props.args]
+  );
+
+  const $props = {
+    ...args,
+    ...variants
+  };
 
   const [isRootFocusVisibleWithin, triggerRootFocusVisibleWithinProps] =
     useTrigger("useFocusVisibleWithin", {
@@ -587,7 +597,6 @@ function useBehavior<P extends pp.BaseButtonProps>(
       endIconSlot: "endIcon",
       root: "root"
     },
-
     ref
   );
 
@@ -640,12 +649,16 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
   const func = function <T extends PropsType>(
     props: T & StrictProps<T, PropsType>
   ) {
-    const { variants, args, overrides } = deriveRenderOpts(props, {
-      name: nodeName,
-      descendantNames: [...PlasmicDescendants[nodeName]],
-      internalArgPropNames: PlasmicSecondaryButton__ArgProps,
-      internalVariantPropNames: PlasmicSecondaryButton__VariantProps
-    });
+    const { variants, args, overrides } = React.useMemo(
+      () =>
+        deriveRenderOpts(props, {
+          name: nodeName,
+          descendantNames: [...PlasmicDescendants[nodeName]],
+          internalArgPropNames: PlasmicSecondaryButton__ArgProps,
+          internalVariantPropNames: PlasmicSecondaryButton__VariantProps
+        }),
+      [props, nodeName]
+    );
 
     return PlasmicSecondaryButton__RenderFunc({
       variants,

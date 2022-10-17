@@ -3,7 +3,12 @@ import notionCreds from "../utils/notionCreds";
 
 import { createDbWrapper } from "../utils/notionApiWrappers";
 import { filter } from "../utils/notionUtils/filter";
-import { Consumption, consumptionKeys, ErrorCode } from "../utils/sharedDomain";
+import {
+  Consumption,
+  consumptionKeys,
+  ErrorCode,
+  User,
+} from "../utils/sharedDomain";
 import {
   apiErrors,
   handlerError,
@@ -64,6 +69,7 @@ export async function getConsumption(
         prevIndexBathroom,
         prevIndexKitchen,
       },
+      user as User,
     ] as const;
   }
 
@@ -113,6 +119,7 @@ export async function getConsumption(
       prevIndexBathroom,
       prevIndexKitchen,
     },
+    user as User,
   ] as const;
 }
 

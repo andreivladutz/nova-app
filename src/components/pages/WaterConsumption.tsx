@@ -112,7 +112,20 @@ function WaterConsumption_(
     hasUpdated,
     consumptionPageId,
   } = consumption.data || {};
-  const { total: totalBill, waterConsumption, billId } = latestBill.data || {};
+  const {
+    total: totalNoExistingBalance,
+    existingBalance,
+    waterConsumption,
+    billId,
+  } = latestBill.data || {};
+  const shouldUseTotalBillPrice =
+    user.data?.usesFullBillPrice &&
+    typeof totalNoExistingBalance === "number" &&
+    typeof existingBalance === "number";
+  // Only if the flag is on for the user, use whole bill total
+  const totalBill = shouldUseTotalBillPrice
+    ? totalNoExistingBalance + existingBalance
+    : totalNoExistingBalance;
   const pricePerCubeM = ((totalBill || 1) / (waterConsumption || 1)).toFixed(2);
 
   const [stateWC, setStateWC] = React.useState(indexWC);

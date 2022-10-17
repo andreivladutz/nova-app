@@ -63,9 +63,6 @@ export interface DefaultErrorMessageProps {
   className?: string;
 }
 
-export const defaultErrorMessage__Args: Partial<PlasmicErrorMessage__ArgsType> =
-  {};
-
 function PlasmicErrorMessage__RenderFunc(props: {
   variants: PlasmicErrorMessage__VariantsArgs;
   args: PlasmicErrorMessage__ArgsType;
@@ -74,9 +71,22 @@ function PlasmicErrorMessage__RenderFunc(props: {
   forNode?: string;
 }) {
   const { variants, overrides, forNode } = props;
-  const args = Object.assign({}, defaultErrorMessage__Args, props.args);
-  const $props = args;
+
   const $ctx = ph.useDataEnv?.() || {};
+  const args = React.useMemo(
+    () =>
+      Object.assign(
+        {},
+
+        props.args
+      ),
+    [props.args]
+  );
+
+  const $props = {
+    ...args,
+    ...variants
+  };
 
   return (
     true ? (
@@ -161,12 +171,16 @@ function makeNodeComponent<NodeName extends NodeNameType>(nodeName: NodeName) {
   const func = function <T extends PropsType>(
     props: T & StrictProps<T, PropsType>
   ) {
-    const { variants, args, overrides } = deriveRenderOpts(props, {
-      name: nodeName,
-      descendantNames: [...PlasmicDescendants[nodeName]],
-      internalArgPropNames: PlasmicErrorMessage__ArgProps,
-      internalVariantPropNames: PlasmicErrorMessage__VariantProps
-    });
+    const { variants, args, overrides } = React.useMemo(
+      () =>
+        deriveRenderOpts(props, {
+          name: nodeName,
+          descendantNames: [...PlasmicDescendants[nodeName]],
+          internalArgPropNames: PlasmicErrorMessage__ArgProps,
+          internalVariantPropNames: PlasmicErrorMessage__VariantProps
+        }),
+      [props, nodeName]
+    );
 
     return PlasmicErrorMessage__RenderFunc({
       variants,
